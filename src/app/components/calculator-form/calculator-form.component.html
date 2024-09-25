@@ -1,0 +1,143 @@
+<mat-tab-group [(selectedIndex)]="selectedTabIndex">
+
+  <mat-tab label="Location" disabled="false">
+    <ng-template mat-tab-label>
+      <mat-icon>location_on</mat-icon>
+    </ng-template>
+    <div class="content">
+      <h2>Wybierz swoje województwo</h2>
+      <app-map (regionSelected)="onRegionSelected($event)"></app-map>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Customer" [disabled]="true">
+    <ng-template mat-tab-label>
+      <mat-icon>person</mat-icon>
+    </ng-template>
+    <div class="content">
+      <h2>Typ klienta</h2>
+      <div>
+        <button matRipple
+                [ngClass]="{'select-button': true, 'selected': formData.customerType === 'Prywatny'}"
+                (click)="formData.customerType = 'Prywatny'; nextStep()">
+          <mat-icon>person</mat-icon>
+          Prywatny
+        </button>
+        <button matRipple
+                [ngClass]="{'select-button': true, 'selected': formData.customerType === 'Firma'}"
+                (click)="formData.customerType = 'Firma'; nextStep()">
+          <mat-icon>business</mat-icon>
+          Firma
+        </button>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="MountType" [disabled]="true">
+    <ng-template mat-tab-label>
+      <mat-icon>roofing</mat-icon>
+    </ng-template>
+    <div class="content">
+      <h2>Typ montażu</h2>
+      <div>
+        <button matRipple
+                [ngClass]="{'select-button': true, 'selected': formData.installationType === 'Na dachu'}"
+                (click)="formData.installationType == 'Na dachu' ? formData.installationType = null : formData.installationType = 'Na dachu'">
+          <mat-icon>roofing</mat-icon>
+          Na dachu
+        </button>
+        <button matRipple
+                [ngClass]="{'select-button': true, 'selected': formData.installationType === 'Na gruncie'}"
+                (click)="formData.installationType = 'Na gruncie'; nextStep()">
+          <mat-icon>forest</mat-icon>
+          Na gruncie
+        </button>
+      </div>
+      <div [@expandCollapse]="formData.installationType == 'Na dachu' ? 'expanded' : 'collapsed'">
+        <h2>Typ dachu</h2>
+        <div>
+          <button matRipple
+                  [ngClass]="{'select-button': true, 'selected': formData.roofType === 'Płaski'}"
+                  (click)="formData.roofType = 'Płaski'; nextStep()">
+            <mat-icon>horizontal_rule</mat-icon>
+            Płaski
+          </button>
+          <button matRipple
+                  [ngClass]="{'select-button': true, 'selected': formData.roofType === 'Pochyły'}"
+                  (click)="formData.roofType = 'Pochyły'; nextStep()">
+            <mat-icon>roofing</mat-icon>
+            Pochyły
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Calculation" [disabled]="true">
+    <ng-template mat-tab-label>
+      <mat-icon>power</mat-icon>
+    </ng-template>
+    <h2 style="padding-top:70px">Typ Kalkulacji</h2>
+
+    <div class="content" style="justify-content: start;">
+      <mat-accordion>
+        <mat-expansion-panel togglePosition="before">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Roczne zużycie energii elektrycznej</mat-panel-title>
+            <mat-icon>power</mat-icon>
+          </mat-expansion-panel-header>
+          <div class="expansion-power-panel-content">
+            <mat-form-field appearance="outline">
+              <mat-label>kWh</mat-label>
+              <input matInput type="number" style="text-align: center;" [step]="1000" [min]="0"
+                     [(ngModel)]="energyConsumptionPerYear"/>
+            </mat-form-field>
+            <div>
+              <button class="select-button" matRipple
+                      (click)="energyConsumptionPerYear > 0 ? nextStep() : showMessage()">
+                <mat-icon>done_all</mat-icon>
+                Zatwierdź
+              </button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel togglePosition="before">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Oczekiwana moc instalacji</mat-panel-title>
+            <mat-icon>solar_power</mat-icon>
+          </mat-expansion-panel-header>
+          <div class="expansion-power-panel-content">
+            <mat-form-field appearance="outline">
+              <mat-label>kWp</mat-label>
+              <input matInput type="number" style="text-align: center;" [(ngModel)]="installationPower" [step]="0.5"
+                     [min]="0">
+            </mat-form-field>
+            <mat-slider class="my-slider" min="3" max="50" step="0.5">
+              <input matSliderThumb value="3" [(ngModel)]="installationPower">
+            </mat-slider>
+            <div>
+              <button class="select-button" matRipple (click)="installationPower > 0 ? nextStep() : showMessage()">
+                <mat-icon>done_all</mat-icon>
+                Zatwierdź
+              </button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Summary" [disabled]="true">
+    <ng-template mat-tab-label>
+      <mat-icon>calculate</mat-icon>
+    </ng-template>
+    Podsumowanie
+  </mat-tab>
+
+</mat-tab-group>
+
+<button *ngIf="selectedTabIndex > 0" class="nav-button" (click)="previousStep()">
+  <mat-icon>arrow_back</mat-icon>
+  Wstecz
+</button>
