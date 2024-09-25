@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {MapComponent} from "../../shared-components/map/map.component";
 import {ProgressBarComponent} from "../../shared-components/progress-bar/progress-bar.component";
 import {MatTab, MatTabGroup, MatTabLabel, MatTabsModule} from "@angular/material/tabs";
@@ -14,6 +14,9 @@ import {MatButton} from "@angular/material/button";
 import {ProgressService} from "../../services/progress.service";
 import {MatRipple} from "@angular/material/core";
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import {SummaryFormComponent} from "../../shared-components/summary-form/summary-form.component";
+import {FormDataService} from "../../services/form-data.service";
+import {FormTabService} from "../../services/form-tab.service";
 
 
 @Component({
@@ -49,84 +52,74 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     NgIf,
     MatRipple,
     NgClass,
+    SummaryFormComponent,
   ],
   templateUrl: './calculator-form.component.html',
   styleUrl: './calculator-form.component.scss',
 })
-export class CalculatorFormComponent implements AfterViewInit{
-  selectedTabIndex: number = 0;
-  selectedButton: number | null = null;
-  formData: any = {
-    region: '',
-    customerType: '',
-    roofType: '',
-    installationType: '',
-    energyConsumptionPerYear: null,
-    installationPower: null
-  };
-
+export class CalculatorFormComponent implements AfterViewInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
 
-  constructor(private progressService: ProgressService) {}
+  constructor(private progressService: ProgressService,
+              public formDataService: FormDataService,
+              private tabService: FormTabService) {}
 
   ngAfterViewInit() {
     const totalSteps = this.tabGroup._tabs.length;
     this.progressService.setTotalSteps(totalSteps);
+    this.tabService.getSelectedTabIndex().subscribe(index => {
+      if (this.tabGroup) {
+        this.tabGroup.selectedIndex = index;
+      }
+    });
   }
 
   get energyConsumptionPerYear(): number {
-    return this.formData.energyConsumptionPerYear;
+    return this.formDataService.getFormData().energyConsumptionPerYear;
   }
 
   set energyConsumptionPerYear(value: number) {
-    this.formData.energyConsumptionPerYear = value;
+    this.formDataService.setFormData({ energyConsumptionPerYear: value });
     this.updateInstallationPower();
   }
 
   get installationPower(): number {
-    return this.formData.installationPower;
+    return this.formDataService.getFormData().installationPower;
   }
 
   set installationPower(value: number) {
-    this.formData.installationPower = value;
+    this.formDataService.setFormData({ installationPower: value });
   }
 
   private updateInstallationPower() {
-    const adjustedPower = Math.round((this.formData.energyConsumptionPerYear / 1000) / 0.9);
+    const adjustedPower = Math.round((this.formDataService.getFormData().energyConsumptionPerYear / 1000) / 0.9);
     this.installationPower = Math.max(3, Math.min(50, adjustedPower));
   }
 
   onRegionSelected(regionName: string) {
-    this.formData.region = regionName;
+    this.formDataService.setFormData({ region: regionName });
     this.nextStep();
   }
 
   nextStep() {
-    if (this.selectedTabIndex < this.tabGroup._tabs.length - 1) {
-      this.tabGroup._tabs.toArray()[this.selectedTabIndex + 1].disabled = false;
-      this.selectedTabIndex += 1;
-      if(this.progressService.getCurrentStep() < this.selectedTabIndex){
-        this.progressService.setCurrentStep(this.selectedTabIndex);
+    let currentIndex = this.tabGroup.selectedIndex ?? 0; // Add default value to handle undefined
+
+    if (currentIndex < this.tabGroup._tabs.length - 1) {
+      currentIndex++; // Increment the current index
+      this.tabGroup._tabs.toArray()[currentIndex].disabled = false; // Enable the next tab
+      this.tabService.setSelectedTabIndex(currentIndex); // Update the tab index in the service
+
+      // Ensure that the progress service step is in sync
+      if (this.progressService.getCurrentStep() < currentIndex) {
+        this.progressService.setCurrentStep(currentIndex);
       }
     }
   }
 
-  previousStep() {
-    if (this.selectedTabIndex > 0) {
-      this.selectedTabIndex -= 1;
-      if(this.progressService.getCurrentStep() < this.selectedTabIndex){
-        this.progressService.setCurrentStep(this.selectedTabIndex);
-      }
-    }
-  }
 
   submitForm() {
-    console.log('Form Data:', this.formData);
+    console.log('Form Data:',  this.formDataService.getFormData());
     this.nextStep();
-  }
-
-  selectButton(buttonId: number) {
-    this.selectedButton = buttonId;
   }
 
   showMessage() {

@@ -97,7 +97,7 @@ footer {
   }
 
   &.selected {
-    border: 1px solid m3-theme.$dark-green;
+    border: 2px solid m3-theme.$dark-green;
     box-shadow: inset 2px 2px 4px rgb(11, 124, 21), inset -1px -1px 3px rgb(124, 213, 130);
   }
 }
@@ -132,4 +132,8 @@ footer {
 
 button mat-icon {
   margin-right: 0.5em;
+}
+
+.nav-container {
+  align-content: center;
 }
