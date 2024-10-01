@@ -1,0 +1,33 @@
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 800px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+mat-card {
+  padding: 10px;
+}
+
+.content {
+  display: flex;
+  //flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 10vh;
+  //padding: 30px;
+  //width: 100%;
+  height: auto;
+  //box-sizing: border-box;
+}

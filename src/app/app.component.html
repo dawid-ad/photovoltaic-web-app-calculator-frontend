@@ -2,19 +2,18 @@
   <app-header></app-header>
   <main>
     <div>
-      <app-calculator-form></app-calculator-form>
+      <router-outlet></router-outlet>
     </div>
   </main>
-  <div class="nav-container">
-    <button *ngIf="selectedTabIndex > 0" class="nav-button" (click)="previousStep()">
+  <div class="nav-container" *ngIf="showNavigation && selectedTabIndex > 0">
+    <button class="nav-button" (click)="previousStep()">
       <mat-icon>arrow_back</mat-icon>
       Wstecz
     </button>
   </div>
-  <div class="progress-bar-container">
+  <div class="progress-bar-container" *ngIf="showProgress">
     <app-progress-bar></app-progress-bar>
   </div>
-
   <app-footer></app-footer>
 </div>
 

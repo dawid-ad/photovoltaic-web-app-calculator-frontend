@@ -1,5 +1,5 @@
 <mat-tab-group>
-<mat-tab label="Location" disabled="false">
+  <mat-tab label="Location" disabled="false">
     <ng-template mat-tab-label>
       <mat-icon>location_on</mat-icon>
     </ng-template>
@@ -63,11 +63,23 @@
           </button>
           <button matRipple
                   [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().roofType === 'Pochyły'}"
-                  (click)="formDataService.getFormData().roofType = 'Pochyły'; nextStep()">
+                  (click)="formDataService.getFormData().roofType = 'Pochyły'">
             <mat-icon>roofing</mat-icon>
             Pochyły
           </button>
         </div>
+      </div>
+      <div [@expandCollapse]="formDataService.getFormData().roofType == 'Pochyły' ? 'expanded' : 'collapsed'">
+        <mat-form-field style="width: 300px; padding: 30px">
+          <mat-label style="font-weight: bold;">Rodzaj Pokrycia Dachu</mat-label>
+          <mat-select required [(ngModel)]="formDataService.getFormData().roofSurface">
+            <mat-option value="ceramic_tiles" (click)="nextStep()">Dachówka ceramiczna</mat-option>
+            <mat-option value="metal_tiles" (click)="nextStep()">Blachodachówka</mat-option>
+            <mat-option value="steel" (click)="nextStep()">Blacha</mat-option>
+            <mat-option value="tar_paper" (click)="nextStep()">Papa</mat-option>
+            <mat-option value="other" (click)="nextStep()">Inne</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
   </mat-tab>
@@ -93,9 +105,9 @@
             </mat-form-field>
             <div>
               <button class="select-button" matRipple
-                      (click)="energyConsumptionPerYear > 0 ? nextStep() : showMessage()">
-                <mat-icon>done_all</mat-icon>
-                Zatwierdź
+                      (click)="energyConsumptionPerYear > 0 ? goToResult() : showMessage()">
+                <mat-icon>calculate</mat-icon>
+                Przelicz
               </button>
             </div>
           </div>
@@ -115,25 +127,15 @@
               <input matSliderThumb value="3" [(ngModel)]="installationPower">
             </mat-slider>
             <div>
-              <button class="select-button" matRipple (click)="installationPower > 0 ? nextStep() : showMessage()">
-                <mat-icon>done_all</mat-icon>
-                Zatwierdź
+              <button class="select-button" matRipple (click)="installationPower > 0 ? goToResult() : showMessage()">
+                <mat-icon>calculate</mat-icon>
+                Przelicz
               </button>
             </div>
           </div>
         </mat-expansion-panel>
       </mat-accordion>
 
-    </div>
-  </mat-tab>
-
-  <mat-tab label="Summary" [disabled]="true">
-    <ng-template mat-tab-label>
-      <mat-icon>calculate</mat-icon>
-    </ng-template>
-    <div class="content">
-      <h2>Podsumowanie</h2>
-      <app-summary-form></app-summary-form>
     </div>
   </mat-tab>
 </mat-tab-group>

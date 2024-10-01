@@ -12,11 +12,12 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
 import {ProgressService} from "../../services/progress.service";
-import {MatRipple} from "@angular/material/core";
+import {MatOptgroup, MatOption, MatRipple} from "@angular/material/core";
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import {SummaryFormComponent} from "../../shared-components/summary-form/summary-form.component";
 import {FormDataService} from "../../services/form-data.service";
 import {FormTabService} from "../../services/form-tab.service";
+import {MatSelect} from "@angular/material/select";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -32,10 +33,7 @@ import {FormTabService} from "../../services/form-tab.service";
   imports: [
     MapComponent,
     ProgressBarComponent,
-    MatTabGroup,
-    MatTab,
     MatIcon,
-    MatTabLabel,
     FormsModule,
     MatFormField,
     MatPrefix,
@@ -52,7 +50,9 @@ import {FormTabService} from "../../services/form-tab.service";
     NgIf,
     MatRipple,
     NgClass,
-    SummaryFormComponent,
+    MatSelect,
+    MatOption,
+    MatOptgroup,
   ],
   templateUrl: './calculator-form.component.html',
   styleUrl: './calculator-form.component.scss',
@@ -62,16 +62,20 @@ export class CalculatorFormComponent implements AfterViewInit {
 
   constructor(private progressService: ProgressService,
               public formDataService: FormDataService,
-              private tabService: FormTabService) {}
+              private tabService: FormTabService,
+              private router: Router) {}
 
   ngAfterViewInit() {
     const totalSteps = this.tabGroup._tabs.length;
     this.progressService.setTotalSteps(totalSteps);
+    this.tabService.setSelectedTabIndex(0);
+    this.progressService.setCurrentStep(0);
     this.tabService.getSelectedTabIndex().subscribe(index => {
       if (this.tabGroup) {
         this.tabGroup.selectedIndex = index;
       }
     });
+    this.formDataService.resetFormData();
   }
 
   get energyConsumptionPerYear(): number {
@@ -116,10 +120,11 @@ export class CalculatorFormComponent implements AfterViewInit {
     }
   }
 
-
-  submitForm() {
-    console.log('Form Data:',  this.formDataService.getFormData());
-    this.nextStep();
+  goToResult() {
+    const totalSteps = this.tabGroup._tabs.length;
+    this.progressService.setCurrentStep(totalSteps);
+    this.router.navigate(['/result']);
+    console.log(this.formDataService.formData)
   }
 
   showMessage() {
