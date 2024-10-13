@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {CalculatorFormComponent} from "./components/calculator-form/calculator-form.component";
 import {HeaderComponent} from "./shared-components/header/header.component";
@@ -22,9 +22,9 @@ export class AppComponent  implements OnInit {
   showNavigation: boolean = false;
 
   constructor(private tabService: FormTabService, private router: Router) {
-    this.router.events.subscribe(() => {
-      this.showProgress = this.router.url === '/form' || this.router.url === '/result';
-      this.showNavigation = this.router.url === '/form';
+    this.router.events.subscribe(event => {
+      this.showProgress = this.router.url === '/kalkulator' || this.router.url === '/wycena';
+      this.showNavigation = this.router.url === '/kalkulator';
     });
   }
   ngOnInit() {

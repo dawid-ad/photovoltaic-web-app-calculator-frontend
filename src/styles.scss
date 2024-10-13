@@ -14,6 +14,7 @@ html, body {
   padding: 0;
   font-family: Arial, sans-serif !important;
   color: $dark-grey;
+  box-sizing: border-box;
 }
 
 body {
@@ -25,11 +26,15 @@ body {
 .page-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 main {
   flex-grow: 1;
+  margin-top: 70px;
+}
+
+.main-layout{
   padding: 1em;
 }
 
@@ -40,12 +45,20 @@ header, footer {
 }
 
 header {
-  padding: 1px 0;
+  position: fixed;
+  min-height: 70px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: $dark-grey;
+  opacity: 0.9;
 }
 
 footer {
   padding: 15px 0;
   font-size: 15px;
+  opacity: 0.9;
 }
 
 .progress-bar-container {
@@ -57,7 +70,6 @@ footer {
   background-color: $grey;
   overflow: hidden;
   border-radius: 3px;
-
 }
 
 .progress {
@@ -69,15 +81,15 @@ footer {
 
 .select-button {
   margin: 0.5em;
-  padding: 0.8em 2em;
+  padding: 0.1em 0.1em;
   font-size: 1em;
   background-color: $light-green;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 200px;
-  height: 65px;
+  min-width: 200px;
+  min-height: 65px;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -92,8 +104,6 @@ footer {
 
   &:focus, &.selected {
     outline: none;
-    width: 196px;
-    height: 61px;
   }
 
   &.selected {
@@ -137,3 +147,4 @@ button mat-icon {
 .nav-container {
   align-content: center;
 }
+

@@ -1,0 +1,73 @@
+<div #canvas></div>
+
+<div *ngIf="setLightsMode">
+  <label for="lightX">Light X: </label>
+  <input type="range" id="lightX" min="-100" max="1000" step="1" [(ngModel)]="lightPosition.x" (change)="updateLightPosition()"/>
+  <span>{{ lightPosition.x }}</span>
+</div>
+
+<div *ngIf="setLightsMode">
+  <label for="lightY">Light Y: </label>
+  <input type="range" id="lightY" min="0" max="1000" step="1" [(ngModel)]="lightPosition.y" (change)="updateLightPosition()"/>
+  <span>{{ lightPosition.y }}</span>
+</div>
+
+<div *ngIf="setLightsMode">
+  <label for="lightZ">Light Z: </label>
+  <input type="range" id="lightZ" min="-100" max="1000" step="1" [(ngModel)]="lightPosition.z" (change)="updateLightPosition()"/>
+  <span>{{ lightPosition.z }}</span>
+</div>
+
+<div *ngIf="setLightsMode">
+  <label for="lightIntensity">Light Intensity: </label>
+  <input type="range" id="lightIntensity" min="0" max="30" step="0.1" [(ngModel)]="lightIntensity" (change)="updateLightIntensity()"/>
+  <span>{{ lightIntensity }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera X: </label>
+  <mat-slider type="range" min="-100" max="100" step="0.01"  (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraPosition.x">
+  </mat-slider>
+  <span>{{ cameraPosition.x }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera Y: </label>
+  <mat-slider type="range"  min="-0" max="5" step="0.001" (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraPosition.y">
+  </mat-slider>
+  <span>{{ cameraPosition.y }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera Z: </label>
+  <mat-slider type="range" min="0" max="5" step="0.001" (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraPosition.z">
+  </mat-slider>
+  <span>{{ cameraPosition.z }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera rotation X: </label>
+  <mat-slider type="range" min="0" max="5" step="0.001"  (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraRotation.x">
+  </mat-slider>
+  <span>{{ cameraRotation.x }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera rotation Y: </label>
+  <mat-slider type="range"  min="0" max="360" step="0.001" (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraRotation.y">
+  </mat-slider>
+  <span>{{ cameraRotation.y }}</span>
+</div>
+
+<div *ngIf="setCameraMode">
+  <label>camera rotation Z: </label>
+  <mat-slider type="range" min="0" max="360" step="0.001" (change)="updateCameraPosition()">
+    <input matSliderThumb [(ngModel)]="cameraRotation.z">
+  </mat-slider>
+  <span>{{ cameraRotation.z }}</span>
+</div>

@@ -1,36 +1,40 @@
 import { Injectable } from '@angular/core';
+import {FormData} from "../model/FormData";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormDataService {
-  formData: any = {
-    region: '',
-    customerType: '',
-    roofType: '',
-    roofSurface: '',
-    installationType: '',
-    energyConsumptionPerYear: null,
-    installationPower: null,
-  };
+  private formData = new FormData();
 
   setFormData(data: any) {
     this.formData = { ...this.formData, ...data };
   }
 
+  private setMountType(data: any){
+    switch (data.installationType) {
+      case 'GROUND':
+        data.mountType = data.installationType;
+        break;
+      case 'ROOF':
+        switch (data.roofType) {
+          case 'FLAT_ROOF':
+            data.mountType = 'BALLAST_FLAT';
+            break;
+          case 'SLANT_ROOF':
+            data.mountType = ((data.roofSurface === 'OTHER') ? 'STEEL_SLANT' : data.roofSurface);
+            break;
+        }
+        break;
+    }
+    return data;
+  }
+
   getFormData() {
-    return this.formData;
+    return this.setMountType(this.formData);
   }
 
   resetFormData() {
-    this.formData = {
-      region: '',
-      customerType: '',
-      roofType: '',
-      roofSurface: '',
-      installationType: '',
-      energyConsumptionPerYear: null,
-      installationPower: null,
-    };
+    this.formData = new FormData();
   }
 }

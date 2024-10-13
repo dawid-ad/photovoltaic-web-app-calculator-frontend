@@ -1,9 +1,7 @@
 <div class="page-layout">
   <app-header></app-header>
   <main>
-    <div>
       <router-outlet></router-outlet>
-    </div>
   </main>
   <div class="nav-container" *ngIf="showNavigation && selectedTabIndex > 0">
     <button class="nav-button" (click)="previousStep()">

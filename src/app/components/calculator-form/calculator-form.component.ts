@@ -84,20 +84,20 @@ export class CalculatorFormComponent implements AfterViewInit {
 
   set energyConsumptionPerYear(value: number) {
     this.formDataService.setFormData({ energyConsumptionPerYear: value });
-    this.updateInstallationPower();
+    this.updateExpectedPvPower();
   }
 
-  get installationPower(): number {
-    return this.formDataService.getFormData().installationPower;
+  get expectedPvPower(): number {
+    return this.formDataService.getFormData().expectedPvPower;
   }
 
-  set installationPower(value: number) {
-    this.formDataService.setFormData({ installationPower: value });
+  set expectedPvPower(value: number) {
+    this.formDataService.setFormData({ expectedPvPower: value });
   }
 
-  private updateInstallationPower() {
+  private updateExpectedPvPower() {
     const adjustedPower = Math.round((this.formDataService.getFormData().energyConsumptionPerYear / 1000) / 0.9);
-    this.installationPower = Math.max(3, Math.min(50, adjustedPower));
+    this.expectedPvPower = Math.max(3, Math.min(50, adjustedPower));
   }
 
   onRegionSelected(regionName: string) {
@@ -120,11 +120,17 @@ export class CalculatorFormComponent implements AfterViewInit {
     }
   }
 
-  goToResult() {
+  goToResult(calculationType: string) {
+    if(calculationType === 'energyConsumptionPerYear'){
+      this.formDataService.getFormData().expectedPvPower = null;
+    }
+    if(calculationType === 'expectedPvPower'){
+      this.formDataService.getFormData().energyConsumptionPerYear = null;
+    }
     const totalSteps = this.tabGroup._tabs.length;
     this.progressService.setCurrentStep(totalSteps);
-    this.router.navigate(['/result']);
-    console.log(this.formDataService.formData)
+    this.router.navigate(['/wycena']);
+    console.log(this.formDataService.getFormData())
   }
 
   showMessage() {
