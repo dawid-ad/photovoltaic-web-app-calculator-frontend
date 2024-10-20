@@ -1,295 +1,3 @@
-<!--<div class="main-layout">-->
-<!--  <div class="card-grid">-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>12,5 kWp</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Proponowana moc instalacji</h4></mat-card-subtitle>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>505W</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Moduły Encor 50 szt.</h4></mat-card-subtitle>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>Dach Płaski</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Montaż</h4></mat-card-subtitle>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>900 kWh</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Średnie Nasłonecznienie w Twoim Regionie</h4></mat-card-subtitle>-->
-<!--      <mat-card-footer><u>(źródło)</u></mat-card-footer>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>100 000 zł</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Cena netto</h4></mat-card-subtitle>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title><h1>40 000 zł</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>Prognozowana produkcja energii w pierwszym roku</h4></mat-card-subtitle>-->
-<!--      <mat-card-footer>przy średniej cenie 0.90 zł / 1 kWh <u>(źródło)</u></mat-card-footer>-->
-<!--    </mat-card>-->
-<!--&lt;!&ndash;    <mat-card appearance="outlined">-->
-<!--      <mat-card-title>OPCJE DODATKOWE</mat-card-title>-->
-<!--      <mat-card-content class="content">-magazyn energii</mat-card-content>-->
-<!--      <mat-card-footer>PRZELICZ</mat-card-footer>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title>Parametry</mat-card-title>-->
-<!--      <mat-card-subtitle></mat-card-subtitle>-->
-<!--      <mat-card-content class="content">-->
-<!--        - lista-->
-<!--        - wprowadzonych-->
-<!--        - danych-->
-<!--        - w formularzu-->
-<!--      </mat-card-content>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title>Gwarancja</mat-card-title>-->
-<!--      <mat-card-content class="content">- lista</mat-card-content>-->
-<!--    </mat-card>-->
-<!--    <mat-card appearance="outlined">-->
-<!--      <mat-card-title>Marka</mat-card-title>-->
-<!--      <mat-card-subtitle>podzespołów</mat-card-subtitle>-->
-<!--      <mat-card-content class="content">-Moduły: Encor Tier1</mat-card-content>-->
-<!--    </mat-card>&ndash;&gt;-->
-<!--  </div>-->
-<!--</div>-->
-<!--<div class="background">-->
-<!--  <app-model3-d [numberOfPanels]="getNumberOfPanels()" [mountType]="getMountType()"></app-model3-d>-->
-<!--</div>-->
-
-
-<!--<div class="main-layout">-->
-<!--  <div *ngFor="let card of cardData; let i = index">-->
-<!--    <mat-card class="card" appearance="outlined" [@slideIn]>-->
-<!--      <mat-card-title><h1>{{ card.title }}</h1></mat-card-title>-->
-<!--      <mat-card-subtitle><h4>{{ card.subtitle }}</h4></mat-card-subtitle>-->
-<!--      <mat-card-footer *ngIf="card.footer"><u>{{ card.footer }}</u></mat-card-footer>-->
-<!--    </mat-card>-->
-<!--  </div>-->
-<!--  <div *ngIf="!cardData" class="content">-->
-<!--    <button class="select-button" style="width: 250px" matRipple (click)="goToFormPage()">-->
-<!--      <mat-icon>calculate</mat-icon>-->
-<!--      Przelicz ponownie-->
-<!--    </button>-->
-<!--  </div>-->
-<!--</div>-->
-<!--<div class="background">-->
-<!--  <app-model3-d-->
-<!--    *ngIf="getNumberOfPanels() > 0"-->
-<!--    [numberOfPanels]="getNumberOfPanels()"-->
-<!--    [mountType]="getMountType()">-->
-<!--  </app-model3-d>-->
-<!--</div>-->
-
-
-<!--<div class="main-layout">-->
-<!--  <div class="result-section" style="background-image: url('/result_background_inverter.webp')">-->
-<!--    <div [ngClass]="isMobile ? 'transparent-wrapper' : 'card-grid'">-->
-<!--      &lt;!&ndash; divs only for desktop &ndash;&gt;-->
-<!--      <div *ngIf="!isMobile"></div>-->
-
-<!--      &lt;!&ndash; common element &ndash;&gt;-->
-<!--      <div class="text-content" style="margin-top:-8vh">-->
-<!--        <h1>49.6 kWp</h1>-->
-<!--        <p>Proponowana moc instalacji</p>-->
-<!--      </div>-->
-
-<!--      &lt;!&ndash; divs only for desktop &ndash;&gt;-->
-<!--      <div *ngIf="!isMobile"></div>-->
-<!--      <div *ngIf="!isMobile"></div>-->
-<!--    </div>-->
-
-<!--  </div>-->
-<!--  <div class="result-section" style="background-image: url('/panel_shadow.webp')">-->
-<!--    <div [ngClass]="isMobile ? 'transparent-wrapper' : 'card-grid'">-->
-<!--      <div *ngIf="!isMobile"></div>  &lt;!&ndash; Placeholder div only for desktop &ndash;&gt;-->
-<!--      <div *ngIf="!isMobile"></div>-->
-<!--      &lt;!&ndash; common element &ndash;&gt;-->
-<!--      <div class="text-content">-->
-<!--        <h1>Encore 505W</h1>-->
-<!--        <p>Moduły 95 szt.</p>-->
-<!--        <mat-expansion-panel togglePosition="after" style="margin-top: 1vh;">-->
-<!--          <mat-expansion-panel-header>-->
-<!--            <mat-panel-title>Specyfikacja</mat-panel-title>-->
-<!--          </mat-expansion-panel-header>-->
-<!--          <div>-->
-<!--            Sed ut perspiciatis, unde omnis iste natus error sit voluptate-->
-<!--            m accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,-->
-<!--            quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos,-->
-<!--            qui ratione voluptatem sequi nesciunt, neque porro-->
-<!--          </div>-->
-<!--        </mat-expansion-panel>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
-<!--  <div class="result-section" style="background-image: url('/result_background_contact.webp'); ">-->
-<!--    <div class="transparent-wrapper" [ngStyle]="isMobile ? {} : {'background-image': 'url(/contact_wrapper_2.webp)'}">-->
-<!--      <div class="text-content">-->
-<!--        <h1>ZOSTAW KONTAKT</h1>-->
-<!--        <p>oddzwonimy w ciągu 24h</p>-->
-<!--        <mat-form-field appearance="outline" style="min-width: 40vh;">-->
-<!--          <mat-label>Imię i Nazwisko</mat-label>-->
-<!--          <input matInput style="text-align: left">-->
-<!--        </mat-form-field>-->
-<!--        <mat-form-field appearance="outline" style="min-width: 40vh;">-->
-<!--          <mat-label>e-mail</mat-label>-->
-<!--          <input matInput style="text-align: left">-->
-<!--        </mat-form-field>-->
-<!--        <mat-form-field appearance="outline" style="min-width: 40vh;">-->
-<!--          <mat-label>numer telefonu</mat-label>-->
-<!--          <input matInput style="text-align: left;" [value]="'&plus;48'">-->
-<!--        </mat-form-field>-->
-<!--        <button class="select-button" style="width: 200px; height: 65px;" matRipple>-->
-<!--          <mat-icon>mail</mat-icon>-->
-<!--          WYŚLIJ-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-<!-- --- another version ---- -->
-<!--<div class="main-layout">-->
-<!--  <div class="video-container">-->
-<!--    <video autoplay muted loop id="backgroundVideo">-->
-<!--      <source src="/background_result_video_small.mp4" type="video/mp4"/>-->
-<!--      Your browser does not support the video tag.-->
-<!--    </video>-->
-<!--    <div class="video-overlay"></div>-->
-<!--    <div class="result-header-content">-->
-<!--      <h1>49,50 kWp</h1>-->
-<!--      <p>Proponowana moc instalacji</p>-->
-<!--      <mat-icon>keyboard_arrow_down</mat-icon>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="card-grid-double">-->
-<!--    <div class="inner-card-grid-single">-->
-<!--      <div class="inner-card-grid-double">-->
-<!--      <div class="section" style="background-image: url('/panel_480x590_L.png')"></div>-->
-<!--      <div class="section">-->
-<!--        <div class="card-spec">-->
-<!--          <h2>Specyfikacja</h2>-->
-<!--          <p>Szacowana wartość wyprodukowanej energii w 1. roku: <strong>40 000 zł</strong></p>-->
-<!--          <p>(przy średniej cenie 0,90 zł / 1 kWh)</p>-->
-<!--          <p>Moduły fotowoltaiczne: <strong>Encore 505W</strong></p>-->
-<!--          <p>Ilość: <strong>95 szt.</strong></p>-->
-<!--          <p>Falownik: <strong>Solplanet</strong></p>-->
-<!--          <p>Montaż: <strong>System montażowy dla dachów skośnych</strong></p>-->
-<!--        </div>-->
-<!--        <div class="card-spec">-->
-<!--          <h2>Gwarancja</h2>-->
-<!--          <p>Panele fotowoltaiczne wydajność: <strong>30 lat</strong></p>-->
-<!--          <p>Panele fotowoltaiczne produkt: <strong>15 lat</strong></p>-->
-<!--          <p>Falownik: <strong>10, 15 lub 20 lat</strong></p>-->
-<!--          <p>Konstrukcja montażowa: <strong>10 lub 15 lat</strong></p>-->
-<!--          <p>Montaż: <strong>3-5 lat</strong></p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="inner-card-grid-single">-->
-<!--      <div class="section">-->
-<!--        <h1>Dostosuj swoją instalację</h1>-->
-<!--        <div class="section-content">-->
-<!--          <div class="settings-checkbox-container">-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary" checked>-->
-<!--                <p>Komplet podzespołów, audyt, montaż, uzgodnienia ppoż, zgłoszenie instalacji, polska gwarancja, wsparcie-->
-<!--                  posprzedażowe</p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary">-->
-<!--                <p>Rozłącznik DC Projoy</p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary">-->
-<!--                <p>Przycisk ppoż z wyzwalaczem</p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary">-->
-<!--                <p>Optymalizatory mocy:</p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--            <li class="radio-button-li">-->
-<!--              <mat-radio-group disabled>-->
-<!--                <mat-radio-button color="primary" value="everyOtherPanel">Co drugi panel</mat-radio-button>-->
-<!--                <mat-radio-button color="primary" value="everyPanel">Każdy panel</mat-radio-button>-->
-<!--              </mat-radio-group>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary">-->
-<!--                <p>Magazyn energii, Falownik hybrydowy</p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--            <li class="radio-button-li">-->
-<!--              <mat-radio-group disabled>-->
-<!--                <mat-radio-button color="primary" value="7Solplanet">7 kWh Solplanet</mat-radio-button>-->
-<!--                <mat-radio-button color="primary" value="10ENCOR">10 kWh ENCOR</mat-radio-button>-->
-<!--                <mat-radio-button color="primary" value="15ENCOR">15 kWh ENCOR</mat-radio-button>-->
-<!--                <mat-radio-button color="primary" value="20ENCOR">20 kWh ENCOR</mat-radio-button>-->
-<!--              </mat-radio-group>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--              <mat-checkbox color="primary">-->
-<!--                <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:-->
-<!--                  <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">-->
-<!--                    mojprad.gov.pl-->
-<!--                  </a>-->
-<!--                </p>-->
-<!--              </mat-checkbox>-->
-<!--            </li>-->
-<!--          </div>-->
-<!--          <h1>124 000 zł</h1>-->
-<!--          <h2>Proponowana cena brutto</h2>-->
-<!--          <button class="select-button" matRipple>-->
-<!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
-<!--            CHCĘ SKORZYSTAĆ Z OFERTY-->
-<!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="card-grid-single">-->
-<!--    <div class="section">-->
-<!--      <h1>ZOSTAW KONTAKT</h1>-->
-<!--      <div class="section-content">-->
-<!--        <h2>oddzwonimy w ciągu 24h</h2>-->
-<!--        <div class="contact-fields-container">-->
-<!--          <mat-form-field appearance="outline">-->
-<!--            <mat-label>Imię i Nazwisko</mat-label>-->
-<!--            <input matInput style="text-align: left">-->
-<!--          </mat-form-field>-->
-<!--          <mat-form-field appearance="outline">-->
-<!--            <mat-label>e-mail</mat-label>-->
-<!--            <input matInput style="text-align: left">-->
-<!--          </mat-form-field>-->
-<!--          <mat-form-field appearance="outline">-->
-<!--            <mat-label>numer telefonu</mat-label>-->
-<!--            <input matInput style="text-align: left;" [value]="'&plus;48'">-->
-<!--          </mat-form-field>-->
-<!--        </div>-->
-<!--        <button class="select-button" matRipple>-->
-<!--          <mat-icon>mail</mat-icon>-->
-<!--          WYŚLIJ-->
-<!--        </button>-->
-<!--        <mat-checkbox class="terms-checkbox" color="primary">-->
-<!--          Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }} w celu kontaktu i&nbsp;przedstawienia-->
-<!--          oferty fotowoltaiki zgodnie z-->
-<!--          <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">-->
-<!--            polityką prywatności-->
-<!--          </a>.-->
-<!--        </mat-checkbox>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--</div>-->
-
-
 <div class="layout-container">
   <!-- Video Section -->
   <section class="video-section">
@@ -307,7 +15,7 @@
   </section>
   <!-- Result Content Section -->
   <section class="result-content-section">
-    <div class="card-grid-double">
+    <div class="card-grid-double mat-elevation-z1">
       <div class="spec-card">
         <div class="spec-outline">
           <div class="spec-header">
@@ -353,13 +61,86 @@
         </div>
       </div>
       <div class="spec-card">
-        <div class="img-card" style="background-image: url('/panel_480x590_R.png')"></div>
+        <div class="img" style="background-image: url('/panel_480x590_R.png')"></div>
       </div>
     </div>
-    <div class="card-grid-single">
-      test
+
+    <div class="card-grid-single mat-elevation-z1">
+      <div class="pricing-card-grid-double">
+        <div class="pricing-card" id="price-card">
+          <div class="img" style="background-image: url('/solar_img.png')"></div>
+          <div class="pricing-footer">
+            <span class="pricing-footer-price">124 000 zł</span>
+            <span class="pricing-footer-subtitle">Proponowana cena brutto</span>
+          </div>
+        </div>
+        <div class="pricing-card" id="adjust-card">
+          <span class="card-header-title">Dostosuj swoją instalację</span>
+          <div class="pricing-card-content">
+            <div class="pricing-checkboxes">
+              <li>
+                <mat-slide-toggle color="primary" checked>
+                  <p>Komplet podzespołów, audyt, montaż, dokumentacja przeciwpożarowa, zgłoszenie instalacji, polska
+                    gwarancja,
+                    wsparcie posprzedażowe</p>
+                </mat-slide-toggle>
+              </li>
+              <li>
+                <mat-slide-toggle color="primary">
+                  <p>Rozłącznik przeciwpożarowy DC Projoy</p>
+                </mat-slide-toggle>
+              </li>
+              <li>
+                <mat-slide-toggle color="primary">
+                  <p>Przycisk przeciwpożarowy z wyzwalaczem</p>
+                </mat-slide-toggle>
+              </li>
+              <li>
+                <mat-slide-toggle color="primary">
+                  <p>Optymalizatory mocy:</p>
+                </mat-slide-toggle>
+              </li>
+              <li class="radio-button-li">
+                <mat-radio-group disabled>
+                  <mat-radio-button color="primary" value="everyOtherPanel">Co drugi panel</mat-radio-button>
+                  <mat-radio-button color="primary" value="everyPanel">Każdy panel</mat-radio-button>
+                </mat-radio-group>
+              </li>
+              <li>
+                <mat-slide-toggle color="primary">
+                  <p>Magazyn energii, Falownik hybrydowy</p>
+                </mat-slide-toggle>
+              </li>
+              <li class="radio-button-li">
+                <mat-radio-group disabled>
+                  <mat-radio-button color="primary" value="7Solplanet">7 kWh Solplanet</mat-radio-button>
+                  <mat-radio-button color="primary" value="10ENCOR">10 kWh ENCOR</mat-radio-button>
+                  <mat-radio-button color="primary" value="15ENCOR">15 kWh ENCOR</mat-radio-button>
+                  <mat-radio-button color="primary" value="20ENCOR">20 kWh ENCOR</mat-radio-button>
+                </mat-radio-group>
+              </li>
+              <li>
+                <mat-slide-toggle color="primary">
+                  <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:
+                    <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">
+                      mojprad.gov.pl
+                    </a>
+                  </p>
+                </mat-slide-toggle>
+              </li>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pricing-footer">
+        <button class="primary-button" matRipple>
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          DOWIEDZ SIĘ WIĘCEJ
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+      </div>
     </div>
-    <div class="card-grid-single">
+    <div class="card-grid-single mat-elevation-z1">
       <div class="card-header">
         <span class="card-header-title">ZOSTAW KONTAKT</span>
         <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>

@@ -24,6 +24,7 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {environment} from "../../../environments/enivonment";
 import {MatSelect} from "@angular/material/select";
 import {MatRadioModule} from "@angular/material/radio";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
 
 @Component({
   selector: 'app-result',
@@ -59,6 +60,7 @@ import {MatRadioModule} from "@angular/material/radio";
     MatSelect,
     MatRadioModule,
     MatFabButton,
+    MatSlideToggle,
   ],
   templateUrl: './result.component.html',
   styleUrl: './result.component.scss',
