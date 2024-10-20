@@ -9,13 +9,16 @@
       <h1>49,50 kWp</h1>
       <p>Proponowana moc instalacji</p>
     </div>
-    <button mat-icon-button class="scroll-down-button" aria-label="Scroll down">
+    <button mat-icon-button
+            class="scroll-down-button"
+            aria-label="Scroll down"
+            (click)="scrollDown(specification)">
       <mat-icon>keyboard_arrow_down</mat-icon>
     </button>
   </section>
   <!-- Result Content Section -->
   <section class="result-content-section">
-    <div class="card-grid-double mat-elevation-z1">
+    <div #specification class="card-grid-double mat-elevation-z1">
       <div class="spec-card">
         <div class="spec-outline">
           <div class="spec-header">
@@ -65,7 +68,7 @@
       </div>
     </div>
 
-    <div class="card-grid-single mat-elevation-z1">
+    <div #pricing class="card-grid-single mat-elevation-z1">
       <div class="pricing-card-grid-double">
         <div class="pricing-card" id="price-card">
           <div class="img" style="background-image: url('/solar_img.png')"></div>
@@ -77,9 +80,9 @@
         <div class="pricing-card" id="adjust-card">
           <span class="card-header-title">Dostosuj swoją instalację</span>
           <div class="pricing-card-content">
-            <div class="pricing-checkboxes">
+            <div class="pricing-checkboxes" [formGroup]="pricingFormGroup">
               <li>
-                <mat-slide-toggle color="primary" checked>
+                <mat-slide-toggle formControlName="baseProduct" color="primary" required (change)="onSlideToggleChange($event)">
                   <p>Komplet podzespołów, audyt, montaż, dokumentacja przeciwpożarowa, zgłoszenie instalacji, polska
                     gwarancja,
                     wsparcie posprzedażowe</p>
@@ -133,14 +136,16 @@
         </div>
       </div>
       <div class="pricing-footer">
-        <button class="primary-button" matRipple>
+        <button class="primary-button"
+                matRipple
+                (click)="scrollDown(contact)">
           <mat-icon>keyboard_arrow_down</mat-icon>
           DOWIEDZ SIĘ WIĘCEJ
           <mat-icon>keyboard_arrow_down</mat-icon>
         </button>
       </div>
     </div>
-    <div class="card-grid-single mat-elevation-z1">
+    <div #contact class="card-grid-single mat-elevation-z1">
       <div class="card-header">
         <span class="card-header-title">ZOSTAW KONTAKT</span>
         <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>
@@ -168,7 +173,7 @@
         </button>
       </div>
       <div class="contact-footer">
-        <mat-checkbox class="terms-checkbox" color="primary">
+        <mat-checkbox class="terms-checkbox" color="primary" required>
           Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
           oferty fotowoltaiki zgodnie z
           <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {FormData} from "../model/FormData";
+import {CalculationFormData} from "../model/CalculationFormData";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormDataService {
-  private formData = new FormData();
+  private formData = new CalculationFormData();
 
   setFormData(data: any) {
     this.formData = { ...this.formData, ...data };
@@ -35,6 +35,6 @@ export class FormDataService {
   }
 
   resetFormData() {
-    this.formData = new FormData();
+    this.formData = new CalculationFormData();
   }
 }
