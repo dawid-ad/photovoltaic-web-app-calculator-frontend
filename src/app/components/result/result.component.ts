@@ -1,6 +1,6 @@
 import {Component, HostListener, inject, OnInit} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
-import {MatButton, MatIconButton} from "@angular/material/button";
+import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
 import {MatOption, MatRipple} from "@angular/material/core";
 import {MatTooltip} from "@angular/material/tooltip";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, NgStyle} from "@angular/common";
@@ -12,10 +12,8 @@ import {MatCardModule} from "@angular/material/card";
 import {ThreeDModelComponent} from "../../shared-components/three-d-model/three-d-model.component";
 import {MapComponent} from "../../shared-components/map/map.component";
 import {MatTab, MatTabGroup, MatTabLabel} from "@angular/material/tabs";
-import {max} from "rxjs";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {ApiService} from "../../services/api.service";
-import {FormData} from "../../model/FormData";
 import {ContactForm} from "../../model/ContactForm";
 import {Router, RouterLink} from "@angular/router";
 import {FormsModule} from "@angular/forms";
@@ -59,7 +57,8 @@ import {MatRadioModule} from "@angular/material/radio";
     RouterLink,
     MatOption,
     MatSelect,
-    MatRadioModule
+    MatRadioModule,
+    MatFabButton,
   ],
   templateUrl: './result.component.html',
   styleUrl: './result.component.scss',
@@ -78,6 +77,8 @@ export class ResultComponent implements OnInit {
   private apiService = inject(ApiService);
   private contactForm = new ContactForm();
   isMobile = false;
+  specData: any = null;
+  warrantyData: any = null;
 
   constructor(
     public formDataService: FormDataService,
@@ -88,6 +89,8 @@ export class ResultComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initSpecData();
+    this.initWarrantyData();
     this.apiService.getCalculationResult(this.formDataService.getFormData()).subscribe((responseObj: ContactForm) => {
       this.contactForm = responseObj;
       console.log(responseObj);
@@ -108,16 +111,70 @@ export class ResultComponent implements OnInit {
   initCardData() {
     this.cardData = [
       {title: `${this.contactForm.proposedPvPower} kWh`, subtitle: 'Proponowana moc instalacji', footer: ''},
-      {title: `${this.contactForm.modulePower}W`, subtitle: `Moduły ${this.contactForm.moduleModel} ${this.contactForm.panelsQuantity} szt.`, footer: ''},
+      {
+        title: `${this.contactForm.modulePower}W`,
+        subtitle: `Moduły ${this.contactForm.moduleModel} ${this.contactForm.panelsQuantity} szt.`,
+        footer: ''
+      },
       {title: this.contactForm.mountType, subtitle: 'Montaż', footer: ''},
       {title: '---', subtitle: 'Średnie Nasłonecznienie w Twoim Regionie', footer: '(źródło)'},
-      {title: `${Math.round(this.contactForm.priceFrom).toLocaleString('pl-PL')} zł`, subtitle: `Cena ${this.contactForm.vatTax === 1 ? 'netto' : 'brutto'}`, footer: ''},
+      {
+        title: `${Math.round(this.contactForm.priceFrom).toLocaleString('pl-PL')} zł`,
+        subtitle: `Cena ${this.contactForm.vatTax === 1 ? 'netto' : 'brutto'}`,
+        footer: ''
+      },
       {
         title: '---',
         subtitle: 'Prognozowana produkcja energii w pierwszym roku',
         footer: 'przy średniej cenie 0.90 zł / 1 kWh (źródło)'
       }
     ];
+  }
+
+  private initSpecData() {
+    this.specData = [{
+      group: [
+        {title: "Szacowana wartość wyprodukowanej energii w 1 roku:", value: "40 000 zl", important: true},
+        {title: "(przy średniej cenie 0,90 zł / 1 kWh)", value: null, important: false}
+      ]
+    },{
+      group: [
+        {title: "Moduły fotowoltaiczne:", value: "Encore 505W", important: false},
+        {title: "Ilość:", value: "95 szt.", important: false}
+      ]
+    },{
+      group: [
+        {title: "Falownik:", value: "Solplanet", important: false}
+      ]
+    },{
+      group: [
+        {title: "Montaż:", value: "System montażowy dla dachów skośnych", important: false},
+      ]
+    }];
+  }
+
+  private initWarrantyData() {
+    this.warrantyData = [{
+      group: [
+        {title: "Panele fotowoltaiczne wydajność:", value: "30 lat", important: true},
+      ]
+    },{
+      group: [
+        {title: "Panele fotowoltaiczne produkt:", value: "15 lat", important: false}
+      ]
+    },{
+      group: [
+        {title: "Falownik:", value: "10 lat, 15 lat lub 20 lat", important: false},
+      ]
+    },{
+      group: [
+        {title: "Konstrukcja montażowa:", value: "10 lub 15 lat", important: false}
+      ]
+    },{
+      group: [
+        {title: "Montaż:", value: "3-5 lat", important: false},
+      ]
+    }];
   }
 
   getMountType() {
@@ -136,4 +193,6 @@ export class ResultComponent implements OnInit {
   goToFormPage() {
     this.router.navigate(['/form']);
   }
+
+
 }

@@ -18,13 +18,13 @@
         <h2>Typ klienta</h2>
         <div>
           <button matRipple
-                  [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().customerType === 'PRIVATE'}"
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().customerType === 'PRIVATE'}"
                   (click)="formDataService.getFormData().customerType = 'PRIVATE'; nextStep()">
             <mat-icon>person</mat-icon>
             Prywatny
           </button>
           <button matRipple
-                  [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().customerType === 'ENTREPRENEUR'}"
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().customerType === 'ENTREPRENEUR'}"
                   (click)="formDataService.getFormData().customerType = 'ENTREPRENEUR'; nextStep()">
             <mat-icon>business</mat-icon>
             Firma
@@ -41,13 +41,13 @@
         <h2>Typ montażu</h2>
         <div>
           <button matRipple
-                  [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().installationType === 'ROOF'}"
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().installationType === 'ROOF'}"
                   (click)="formDataService.getFormData().installationType == 'ROOF' ? formDataService.getFormData().installationType = null : formDataService.getFormData().installationType = 'ROOF'">
             <mat-icon>roofing</mat-icon>
             Na dachu
           </button>
           <button matRipple
-                  [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().installationType === 'GROUND'}"
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().installationType === 'GROUND'}"
                   (click)="formDataService.getFormData().installationType = 'GROUND'; nextStep()">
             <mat-icon>forest</mat-icon>
             Na gruncie
@@ -58,13 +58,13 @@
           <h2>Typ dachu</h2>
           <div>
             <button matRipple
-                    [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().roofType === 'FLAT_ROOF'}"
+                    [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().roofType === 'FLAT_ROOF'}"
                     (click)="formDataService.getFormData().roofType = 'FLAT_ROOF'; nextStep()">
               <mat-icon>horizontal_rule</mat-icon>
               Płaski
             </button>
             <button matRipple
-                    [ngClass]="{'select-button': true, 'selected': formDataService.getFormData().roofType === 'SLANT_ROOF'}"
+                    [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().roofType === 'SLANT_ROOF'}"
                     (click)="formDataService.getFormData().roofType = 'SLANT_ROOF'">
               <mat-icon>roofing</mat-icon>
               Pochyły
@@ -106,7 +106,7 @@
                        [(ngModel)]="energyConsumptionPerYear"/>
               </mat-form-field>
               <div>
-                <button class="select-button" matRipple
+                <button class="primary-button" matRipple
                         (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') : showMessage()">
                   <mat-icon>calculate</mat-icon>
                   Przelicz
@@ -129,7 +129,7 @@
                 <input matSliderThumb value="3" [(ngModel)]="expectedPvPower">
               </mat-slider>
               <div>
-                <button class="select-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showMessage()">
+                <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showMessage()">
                   <mat-icon>calculate</mat-icon>
                   Przelicz
                 </button>

@@ -67,7 +67,7 @@ footer {
 
 .progress-bar {
   width: 100%;
-  background-color: $grey;
+  background-color: $light-grey;
   overflow: hidden;
   border-radius: 3px;
 }
@@ -79,7 +79,7 @@ footer {
   transition: width 0.3s ease;
 }
 
-.select-button {
+.primary-button {
   margin: 0.5em;
   padding: 0.1em 0.1em;
   font-size: 1em;
