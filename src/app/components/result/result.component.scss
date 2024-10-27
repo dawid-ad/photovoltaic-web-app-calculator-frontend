@@ -77,7 +77,7 @@
 
   .spec-header {
     position: absolute;
-    font-weight: bold;
+    font-weight: $bold-font-weight;
     font-size: 1.1rem;
     top: -11px;
     left: 6%;
@@ -108,7 +108,7 @@
 
   .spec-cell-value {
     text-align: right;
-    font-weight: bold;
+    font-weight: $bold-font-weight;
   }
 }
 
@@ -159,7 +159,7 @@
   background-color: $dark-green;
   color: white;
   margin-left: 3px;
-  font-weight: bold;
+  font-weight: $bold-font-weight;
   text-align: center;
   line-height: 1rem;
   font-size: 0.8rem;
@@ -229,7 +229,7 @@
 
     .pricing-footer-price {
       font-size: 3rem;
-      font-weight: bold;
+      font-weight: $bold-font-weight;
     }
 
     .pricing-footer-subtitle {
@@ -259,7 +259,7 @@
 
   .card-header-title {
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: $bold-font-weight;
     color: $dark-grey;
   }
 
@@ -286,12 +286,21 @@
     margin: 0.5rem;
   }
 
-  .terms-checkbox {
+  .terms-checkbox * {
     text-align: justify;
     color: $dark-grey;
     max-width: 38rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin-top: 1rem;
+  }
+
+  .pricing-main-footer {
+    margin: 1rem;
+  }
+  .pricing-main-footer-subtitle {
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
   }
 }
 
@@ -299,6 +308,51 @@
   width: 90%;
   max-width: 300px;
   margin: 0;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-text {
+  margin: 2rem;
+  font-size: 1.2rem;
+  color: $dark-grey;
+}
+
+.text-line-through {
+  font-size: 2rem !important;
+  color: $grey;
+  text-decoration: line-through;
+}
+
+.pricing-card-adjust {
+  padding-bottom: 2rem;
+}
+
+.tracking-in-expand {
+  animation: tracking-in-expand 1s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 900px) {

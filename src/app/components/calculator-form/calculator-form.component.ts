@@ -14,7 +14,7 @@ import {MatButton} from "@angular/material/button";
 import {ProgressService} from "../../services/progress.service";
 import {MatOptgroup, MatOption, MatRipple} from "@angular/material/core";
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import {FormDataService} from "../../services/form-data.service";
+import {CalculationFormDataService} from "../../services/calculation-form-data.service";
 import {FormTabService} from "../../services/form-tab.service";
 import {MatSelect} from "@angular/material/select";
 import {Router} from "@angular/router";
@@ -61,7 +61,7 @@ export class CalculatorFormComponent implements AfterViewInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
 
   constructor(private progressService: ProgressService,
-              public formDataService: FormDataService,
+              public formDataService: CalculationFormDataService,
               private tabService: FormTabService,
               private router: Router) {}
 
@@ -75,11 +75,11 @@ export class CalculatorFormComponent implements AfterViewInit {
         this.tabGroup.selectedIndex = index;
       }
     });
-    this.formDataService.resetFormData();
+    this.formDataService.resetCalculationFormData();
   }
 
   get energyConsumptionPerYear(): number {
-    return this.formDataService.getFormData().energyConsumptionPerYear;
+    return this.formDataService.getCalculationFormData().energyConsumptionPerYear;
   }
 
   set energyConsumptionPerYear(value: number) {
@@ -88,7 +88,7 @@ export class CalculatorFormComponent implements AfterViewInit {
   }
 
   get expectedPvPower(): number {
-    return this.formDataService.getFormData().expectedPvPower;
+    return this.formDataService.getCalculationFormData().expectedPvPower;
   }
 
   set expectedPvPower(value: number) {
@@ -96,7 +96,7 @@ export class CalculatorFormComponent implements AfterViewInit {
   }
 
   private updateExpectedPvPower() {
-    const adjustedPower = Math.round((this.formDataService.getFormData().energyConsumptionPerYear / 1000) / 0.9);
+    const adjustedPower = Math.round((this.formDataService.getCalculationFormData().energyConsumptionPerYear / 1000) / 0.9);
     this.expectedPvPower = Math.max(3, Math.min(50, adjustedPower));
   }
 
@@ -122,15 +122,14 @@ export class CalculatorFormComponent implements AfterViewInit {
 
   goToResult(calculationType: string) {
     if(calculationType === 'energyConsumptionPerYear'){
-      this.formDataService.getFormData().expectedPvPower = null;
+      this.formDataService.getCalculationFormData().expectedPvPower = 0;
     }
     if(calculationType === 'expectedPvPower'){
-      this.formDataService.getFormData().energyConsumptionPerYear = null;
+      this.formDataService.getCalculationFormData().energyConsumptionPerYear = 0;
     }
     const totalSteps = this.tabGroup._tabs.length;
     this.progressService.setCurrentStep(totalSteps);
     this.router.navigate(['/wycena']);
-    console.log(this.formDataService.getFormData())
   }
 
   showMessage() {

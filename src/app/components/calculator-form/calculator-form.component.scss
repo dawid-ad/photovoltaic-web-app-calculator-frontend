@@ -10,14 +10,14 @@
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  padding: 30px;
+  padding: 20px;
   width: 100%;
   height: auto;
   box-sizing: border-box;
 }
 
 mat-slider {
-  width: 300px;
+  width: 90%;
 }
 
 mat-drawer, mat-drawer-container {
@@ -29,9 +29,30 @@ mat-drawer, mat-drawer-container {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 20vh;
+  min-height: 28vh;
 }
 
 h2 {
   text-transform: uppercase;
+}
+
+.calculation-type-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.calculation-type {
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+mat-panel-title {
+  font-weight: $bold-font-weight;
+}
+
+.mat-label-title {
+  font-weight: $bold-font-weight;
 }

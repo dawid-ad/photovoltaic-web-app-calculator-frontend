@@ -1,186 +1,220 @@
+<div class="spinner-overlay" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+</div>
 <div class="layout-container">
-  <!-- Video Section -->
-  <section class="video-section">
-    <video autoplay muted loop id="backgroundVideo">
-      <source src="/background_result_video_small.mp4" type="video/mp4"/>
-    </video>
-    <div class="video-overlay"></div>
-    <div class="header-content">
-      <h1>49,50 kWp</h1>
-      <p>Proponowana moc instalacji</p>
-    </div>
-    <button mat-icon-button
-            class="scroll-down-button"
-            aria-label="Scroll down"
-            (click)="scrollDown(specification)">
-      <mat-icon>keyboard_arrow_down</mat-icon>
-    </button>
-  </section>
-  <!-- Result Content Section -->
-  <section class="result-content-section">
-    <div #specification class="card-grid-double mat-elevation-z1">
-      <div class="spec-card">
-        <div class="spec-outline">
-          <div class="spec-header">
-            Specyfikacja
+  <div #resultPage *ngIf="resultsReady">
+    <section class="video-section">
+      <video autoplay muted loop id="backgroundVideo">
+        <source src="/background_result_video_small.mp4" type="video/mp4"/>
+      </video>
+      <div class="video-overlay"></div>
+      <div class="header-content tracking-in-expand">
+        <h1>{{ proposedPvPowerText }}</h1>
+        <p>Proponowana moc instalacji</p>
+      </div>
+      <button mat-icon-button
+              class="scroll-down-button"
+              aria-label="Scroll down"
+              (click)="scrollDown(specification)">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+    </section>
+    <!-- Result Content Section -->
+    <section class="result-content-section">
+      <div #specification class="card-grid-double mat-elevation-z1">
+        <div class="spec-card">
+          <div class="spec-outline">
+            <div class="spec-header">
+              Specyfikacja
+            </div>
+            <div class="spec-content">
+              <div *ngFor="let group of specificationFullCardData" class="spec-row-group">
+                <div *ngFor="let item of group.group" class="spec-row">
+                  <div *ngIf="item.value" class="spec-cell-title">
+                    {{ item.title }}
+                  </div>
+                  <div *ngIf="item.value" class="spec-cell-value">
+                    <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
+                    <span *ngIf="item.important" class="important-icon">!</span>
+                  </div>
+                  <div *ngIf="!item.value" class="spec-cell-description">
+                    {{ item.title }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="spec-content">
-            <div *ngFor="let group of specData" class="spec-row-group">
-              <div *ngFor="let item of group.group" class="spec-row">
-                <div *ngIf="item.value" class="spec-cell-title">
-                  {{ item.title }}
-                </div>
-                <div *ngIf="item.value" class="spec-cell-value">
-                  <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
-                  <span *ngIf="item.important" class="important-icon">!</span>
-                </div>
-                <div *ngIf="!item.value" class="spec-cell-description">
-                  {{ item.title }}
+          <div class="spec-outline warranty-outline">
+            <div class="spec-header">
+              Gwarancja
+            </div>
+            <div class="spec-content">
+              <div *ngFor="let group of warrantyFullCardData" class="spec-row-group">
+                <div *ngFor="let item of group.group" class="spec-row">
+                  <div *ngIf="item.value" class="spec-cell-title">
+                    {{ item.title }}
+                  </div>
+                  <div *ngIf="item.value" class="spec-cell-value">
+                    <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
+                    <span *ngIf="item.important" class="important-icon">!</span>
+                  </div>
+                  <div *ngIf="!item.value" class="spec-cell-description">
+                    {{ item.title }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="spec-outline warranty-outline">
-          <div class="spec-header">
-            Gwarancja
-          </div>
-          <div class="spec-content">
-            <div *ngFor="let group of warrantyData" class="spec-row-group">
-              <div *ngFor="let item of group.group" class="spec-row">
-                <div *ngIf="item.value" class="spec-cell-title">
-                  {{ item.title }}
-                </div>
-                <div *ngIf="item.value" class="spec-cell-value">
-                  <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
-                  <span *ngIf="item.important" class="important-icon">!</span>
-                </div>
-                <div *ngIf="!item.value" class="spec-cell-description">
-                  {{ item.title }}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="spec-card">
+          <div class="img" style="background-image: url('/panel_480x590_R.png')"></div>
         </div>
       </div>
-      <div class="spec-card">
-        <div class="img" style="background-image: url('/panel_480x590_R.png')"></div>
-      </div>
-    </div>
 
-    <div #pricing class="card-grid-single mat-elevation-z1">
-      <div class="pricing-card-grid-double">
-        <div class="pricing-card" id="price-card">
-          <div class="img" style="background-image: url('/solar_img.png')"></div>
-          <div class="pricing-footer">
-            <span class="pricing-footer-price">124 000 zł</span>
-            <span class="pricing-footer-subtitle">Proponowana cena brutto</span>
+      <div #pricing class="card-grid-single pricing-card-adjust mat-elevation-z1">
+        <div class="pricing-card-grid-double">
+          <div class="pricing-card" id="price-card">
+            <div class="img" style="background-image: url('/solar_img.png')"></div>
+            <div class="pricing-footer">
+              <div *ngIf="!calculationFormData.grant">
+                <span class="pricing-footer-price">{{ priceText }}</span>
+                <span class="pricing-footer-subtitle">Proponowana cena {{ vatType }}*</span>
+              </div>
+              <div *ngIf="calculationFormData.grant">
+                <div>
+                  <span class="pricing-footer-price text-line-through">{{ priceWithoutGrantText }}</span>
+                </div>
+                <div>
+                  <span class="pricing-footer-price">{{ priceText }}</span>
+                  <span class="pricing-footer-subtitle">Cena z uwzględnieniem dotacji*</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="pricing-card" id="adjust-card">
-          <span class="card-header-title">Dostosuj swoją instalację</span>
-          <div class="pricing-card-content">
-            <div class="pricing-checkboxes" [formGroup]="pricingFormGroup">
-              <li>
-                <mat-slide-toggle formControlName="baseProduct" color="primary" required (change)="onSlideToggleChange($event)">
-                  <p>Komplet podzespołów, audyt, montaż, dokumentacja przeciwpożarowa, zgłoszenie instalacji, polska
-                    gwarancja,
-                    wsparcie posprzedażowe</p>
-                </mat-slide-toggle>
-              </li>
-              <li>
-                <mat-slide-toggle color="primary">
-                  <p>Rozłącznik przeciwpożarowy DC Projoy</p>
-                </mat-slide-toggle>
-              </li>
-              <li>
-                <mat-slide-toggle color="primary">
-                  <p>Przycisk przeciwpożarowy z wyzwalaczem</p>
-                </mat-slide-toggle>
-              </li>
-              <li>
-                <mat-slide-toggle color="primary">
-                  <p>Optymalizatory mocy:</p>
-                </mat-slide-toggle>
-              </li>
-              <li class="radio-button-li">
-                <mat-radio-group disabled>
-                  <mat-radio-button color="primary" value="everyOtherPanel">Co drugi panel</mat-radio-button>
-                  <mat-radio-button color="primary" value="everyPanel">Każdy panel</mat-radio-button>
-                </mat-radio-group>
-              </li>
-              <li>
-                <mat-slide-toggle color="primary">
-                  <p>Magazyn energii, Falownik hybrydowy</p>
-                </mat-slide-toggle>
-              </li>
-              <li class="radio-button-li">
-                <mat-radio-group disabled>
-                  <mat-radio-button color="primary" value="7Solplanet">7 kWh Solplanet</mat-radio-button>
-                  <mat-radio-button color="primary" value="10ENCOR">10 kWh ENCOR</mat-radio-button>
-                  <mat-radio-button color="primary" value="15ENCOR">15 kWh ENCOR</mat-radio-button>
-                  <mat-radio-button color="primary" value="20ENCOR">20 kWh ENCOR</mat-radio-button>
-                </mat-radio-group>
-              </li>
-              <li>
-                <mat-slide-toggle color="primary">
-                  <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:
-                    <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">
-                      mojprad.gov.pl
-                    </a>
-                  </p>
-                </mat-slide-toggle>
-              </li>
+          <div class="pricing-card" id="adjust-card">
+            <span class="card-header-title">Dostosuj swoją instalację</span>
+            <div class="pricing-card-content">
+              <div class="pricing-checkboxes">
+                <li>
+                  <mat-slide-toggle color="primary" [checked]="true" (change)="keepToggleOn($event)">
+                    <p>Komplet podzespołów, audyt, montaż, dokumentacja przeciwpożarowa, zgłoszenie instalacji, polska
+                      gwarancja, wsparcie posprzedażowe</p>
+                  </mat-slide-toggle>
+                </li>
+                <li>
+                  <mat-slide-toggle color="primary" [(ngModel)]="projoyCheckbox"
+                                    (change)="calculateOnChange()">
+                    <p>Rozłącznik przeciwpożarowy DC Projoy</p>
+                  </mat-slide-toggle>
+                </li>
+                <li>
+                  <mat-slide-toggle color="primary" [(ngModel)]="calculationFormData.fireButton"
+                                    (change)="calculateOnChange()">
+                    <p>Przycisk przeciwpożarowy z wyzwalaczem</p>
+                  </mat-slide-toggle>
+                </li>
+                <li>
+                  <mat-slide-toggle color="primary"
+                                    [(ngModel)]="powerOptimizersSlider"
+                                    (change)="calculateOnChange()">
+                    <p>Optymalizatory mocy:</p>
+                  </mat-slide-toggle>
+                </li>
+                <li class="radio-button-li">
+                  <mat-radio-group [(ngModel)]="calculationFormData.powerOptimizersType"
+                                   (change)="calculateOnChange()"
+                                   [disabled]="!powerOptimizersSlider">
+                    <mat-radio-button color="primary" value="HALF_MODULES">Co drugi panel</mat-radio-button>
+                    <mat-radio-button color="primary" value="ALL_MODULES">Każdy panel</mat-radio-button>
+                  </mat-radio-group>
+                </li>
+                <li>
+                  <mat-slide-toggle color="primary"
+                                    *ngIf="energyStorageAvailable"
+                                    [(ngModel)]="energyStorageSlider"
+                                    (change)="calculateOnChange()">
+                    <p>Magazyn energii + Falownik hybrydowy</p>
+                  </mat-slide-toggle>
+                </li>
+                <li class="radio-button-li" *ngIf="energyStorageAvailable">
+                  <mat-radio-group [(ngModel)]="calculationFormData.energyStorageModelId"
+                                   (change)="calculateOnChange()"
+                                   [disabled]="!energyStorageSlider">
+                    <mat-radio-button *ngFor="let energyStorage of energyStorageModels" color="primary"
+                                      value="{{energyStorage.id}}">
+                      {{ energyStorage.power }} {{ energyStorage.model }}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </li>
+                <li>
+                  <mat-slide-toggle color="primary"
+                                    *ngIf="grantPossible && calculationFormData.energyStorageModelId > 0"
+                                    [(ngModel)]="calculationFormData.grant"
+                                    (change)="calculateOnChange()">
+                    <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:
+                      <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">
+                        mojprad.gov.pl
+                      </a>
+                    </p>
+                  </mat-slide-toggle>
+                </li>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="pricing-footer">
-        <button class="primary-button"
-                matRipple
-                (click)="scrollDown(contact)">
-          <mat-icon>keyboard_arrow_down</mat-icon>
-          DOWIEDZ SIĘ WIĘCEJ
-          <mat-icon>keyboard_arrow_down</mat-icon>
-        </button>
-      </div>
-    </div>
-    <div #contact class="card-grid-single mat-elevation-z1">
-      <div class="card-header">
-        <span class="card-header-title">ZOSTAW KONTAKT</span>
-        <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>
-      </div>
-      <div class="card-content">
-        <div class="contact-fields">
-          <mat-form-field appearance="outline">
-            <mat-label>Imię i Nazwisko</mat-label>
-            <input matInput style="text-align: left">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>e-mail</mat-label>
-            <input matInput style="text-align: left">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>numer telefonu</mat-label>
-            <input matInput style="text-align: left;" [value]="'&plus;48'">
-          </mat-form-field>
+        <div class="pricing-main-footer">
+          <button class="primary-button"
+                  matRipple
+                  (click)="scrollDown(contact)">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+            DOWIEDZ SIĘ WIĘCEJ
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+        </div>
+        <div class="pricing-main-footer-subtitle">
+          *Przedstawiona propozycja ma charakter orientacyjny i może ulec zmianie w zależności od specyficznych warunków technicznych i montażowych.
+          W celu potwierdzenia ostatecznej wyceny, prosimy o pozostawienie kontaktu w formularzu poniżej.
+        </div>
+        </div>
+      <div #contact class="card-grid-single mat-elevation-z1">
+        <div class="card-header">
+          <span class="card-header-title">ZOSTAW KONTAKT</span>
+          <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>
+        </div>
+        <div class="card-content">
+          <div class="contact-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Imię i Nazwisko</mat-label>
+              <input matInput style="text-align: left">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>e-mail</mat-label>
+              <input matInput style="text-align: left">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>numer telefonu</mat-label>
+              <input matInput style="text-align: left;" [value]="'&plus;48'">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="contact-footer">
+          <button class="primary-button" matRipple>
+            <mat-icon>mail</mat-icon>
+            WYŚLIJ
+          </button>
+        </div>
+        <div class="contact-footer">
+          <mat-checkbox class="terms-checkbox" color="primary" required>
+            <p>
+              Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
+              oferty fotowoltaiki zgodnie z
+              <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">
+                polityką prywatności
+              </a>.
+            </p>
+          </mat-checkbox>
         </div>
       </div>
-      <div class="contact-footer">
-        <button class="primary-button" matRipple>
-          <mat-icon>mail</mat-icon>
-          WYŚLIJ
-        </button>
-      </div>
-      <div class="contact-footer">
-        <mat-checkbox class="terms-checkbox" color="primary" required>
-          Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
-          oferty fotowoltaiki zgodnie z
-          <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">
-            polityką prywatności
-          </a>.
-        </mat-checkbox>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>

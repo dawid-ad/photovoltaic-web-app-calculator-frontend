@@ -1,0 +1,20 @@
+export class CalculationResult {
+  id: number = 0;
+  calculationDate: any = null;
+  proposedPvPower: number = 0;
+  estimatedOneYearProduction: number = 0;
+  investmentReturnInYears: number = 0;
+  inverterModel: string = '-';
+  mountTypeForView: string = ''
+  price: number = 0;
+  priceWithoutGrant: number = 0;
+  moduleModel: string = '-';
+  modulePower: number = 0;
+  panelsQuantity: number = 0;
+  vatTax: number = 0;
+  pricePerKw: number = 0;
+  energyPricePerKwh: number = 0;
+  projoyIncluded: boolean = false;
+  grantPossible: boolean = false;
+  energyStorageAvailable: boolean = false;
+}

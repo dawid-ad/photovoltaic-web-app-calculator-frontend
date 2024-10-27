@@ -18,14 +18,14 @@
         <h2>Typ klienta</h2>
         <div>
           <button matRipple
-                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().customerType === 'PRIVATE'}"
-                  (click)="formDataService.getFormData().customerType = 'PRIVATE'; nextStep()">
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().customerType === 'PRIVATE'}"
+                  (click)="formDataService.getCalculationFormData().customerType = 'PRIVATE'; nextStep()">
             <mat-icon>person</mat-icon>
             Prywatny
           </button>
           <button matRipple
-                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().customerType === 'ENTREPRENEUR'}"
-                  (click)="formDataService.getFormData().customerType = 'ENTREPRENEUR'; nextStep()">
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().customerType === 'ENTREPRENEUR'}"
+                  (click)="formDataService.getCalculationFormData().customerType = 'ENTREPRENEUR'; nextStep()">
             <mat-icon>business</mat-icon>
             Firma
           </button>
@@ -41,40 +41,43 @@
         <h2>Typ montażu</h2>
         <div>
           <button matRipple
-                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().installationType === 'ROOF'}"
-                  (click)="formDataService.getFormData().installationType == 'ROOF' ? formDataService.getFormData().installationType = null : formDataService.getFormData().installationType = 'ROOF'">
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().installationType === 'ROOF'}"
+                  (click)="formDataService.getCalculationFormData().installationType = 'ROOF'">
             <mat-icon>roofing</mat-icon>
             Na dachu
           </button>
           <button matRipple
-                  [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().installationType === 'GROUND'}"
-                  (click)="formDataService.getFormData().installationType = 'GROUND'; nextStep()">
+                  [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().installationType === 'GROUND'}"
+                  (click)="
+                  formDataService.getCalculationFormData().installationType = 'GROUND';
+                  nextStep();
+                  formDataService.getCalculationFormData().roofType = ''">
             <mat-icon>forest</mat-icon>
             Na gruncie
           </button>
         </div>
         <div
-          [@expandCollapse]="formDataService.getFormData().installationType == 'ROOF' ? 'expanded' : 'collapsed'">
+          [@expandCollapse]="formDataService.getCalculationFormData().installationType === 'ROOF' ? 'expanded' : 'collapsed'">
           <h2>Typ dachu</h2>
           <div>
             <button matRipple
-                    [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().roofType === 'FLAT_ROOF'}"
-                    (click)="formDataService.getFormData().roofType = 'FLAT_ROOF'; nextStep()">
+                    [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().roofType === 'FLAT_ROOF'}"
+                    (click)="formDataService.getCalculationFormData().roofType = 'FLAT_ROOF'; nextStep()">
               <mat-icon>horizontal_rule</mat-icon>
               Płaski
             </button>
             <button matRipple
-                    [ngClass]="{'primary-button': true, 'selected': formDataService.getFormData().roofType === 'SLANT_ROOF'}"
-                    (click)="formDataService.getFormData().roofType = 'SLANT_ROOF'">
+                    [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().roofType === 'SLANT_ROOF'}"
+                    (click)="formDataService.getCalculationFormData().roofType = 'SLANT_ROOF'">
               <mat-icon>roofing</mat-icon>
               Pochyły
             </button>
           </div>
         </div>
-        <div [@expandCollapse]="formDataService.getFormData().roofType == 'SLANT_ROOF' ? 'expanded' : 'collapsed'">
+        <div [@expandCollapse]="formDataService.getCalculationFormData().roofType === 'SLANT_ROOF' ? 'expanded' : 'collapsed'">
           <mat-form-field style="width: 300px; padding: 30px">
-            <mat-label style="font-weight: bold;">Rodzaj Pokrycia Dachu</mat-label>
-            <mat-select required [(ngModel)]="formDataService.getFormData().roofSurface">
+            <mat-label class="mat-label-title">Rodzaj Pokrycia Dachu</mat-label>
+            <mat-select required [(ngModel)]="formDataService.getCalculationFormData().roofSurface">
               <mat-option value="CERAMIC_TILE_SLANT" (click)="nextStep()">Dachówka ceramiczna</mat-option>
               <mat-option value="STEEL_TILE_SLANT" (click)="nextStep()">Blachodachówka</mat-option>
               <mat-option value="STEEL_SLANT" (click)="nextStep()">Blacha</mat-option>
@@ -93,51 +96,52 @@
       <h2 style="padding-top:70px">Typ Kalkulacji</h2>
 
       <div class="content" style="justify-content: start;">
-        <mat-accordion>
-          <mat-expansion-panel togglePosition="before">
-            <mat-expansion-panel-header>
-              <mat-panel-title>Roczne zużycie energii elektrycznej</mat-panel-title>
-              <mat-icon>power</mat-icon>
-            </mat-expansion-panel-header>
-            <div class="expansion-power-panel-content">
-              <mat-form-field appearance="outline">
-                <mat-label>kWh</mat-label>
-                <input matInput type="number" style="text-align: center;" [step]="1000" [min]="0"
-                       [(ngModel)]="energyConsumptionPerYear"/>
-              </mat-form-field>
-              <div>
-                <button class="primary-button" matRipple
-                        (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') : showMessage()">
-                  <mat-icon>calculate</mat-icon>
-                  Przelicz
-                </button>
+        <div class="calculation-type-container">
+          <mat-accordion class="calculation-type">
+            <mat-expansion-panel togglePosition="before">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Roczne zużycie energii elektrycznej</mat-panel-title>
+                <mat-icon>power</mat-icon>
+              </mat-expansion-panel-header>
+              <div class="expansion-power-panel-content">
+                <mat-form-field appearance="outline">
+                  <mat-label>kWh</mat-label>
+                  <input matInput type="number" style="text-align: center;" [step]="1000" [min]="0"
+                         [(ngModel)]="energyConsumptionPerYear"/>
+                </mat-form-field>
+                <div>
+                  <button class="primary-button" matRipple
+                          (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') : showMessage()">
+                    <mat-icon>calculate</mat-icon>
+                    Przelicz
+                  </button>
+                </div>
               </div>
-            </div>
-          </mat-expansion-panel>
-          <mat-expansion-panel togglePosition="before">
-            <mat-expansion-panel-header>
-              <mat-panel-title>Oczekiwana moc instalacji</mat-panel-title>
-              <mat-icon>solar_power</mat-icon>
-            </mat-expansion-panel-header>
-            <div class="expansion-power-panel-content">
-              <mat-form-field appearance="outline">
-                <mat-label>kWp</mat-label>
-                <input matInput type="number" style="text-align: center;" [(ngModel)]="expectedPvPower" [step]="0.5"
-                       [min]="0">
-              </mat-form-field>
-              <mat-slider class="my-slider" min="3" max="50" step="0.5">
-                <input matSliderThumb value="3" [(ngModel)]="expectedPvPower">
-              </mat-slider>
-              <div>
-                <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showMessage()">
-                  <mat-icon>calculate</mat-icon>
-                  Przelicz
-                </button>
+            </mat-expansion-panel>
+            <mat-expansion-panel togglePosition="before">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Oczekiwana moc instalacji</mat-panel-title>
+                <mat-icon>solar_power</mat-icon>
+              </mat-expansion-panel-header>
+              <div class="expansion-power-panel-content">
+                <mat-form-field appearance="outline">
+                  <mat-label>kWp</mat-label>
+                  <input matInput type="number" style="text-align: center;" [(ngModel)]="expectedPvPower" [step]="0.5"
+                         [min]="0">
+                </mat-form-field>
+                <mat-slider class="my-slider" min="3" max="50" step="0.5">
+                  <input matSliderThumb value="3" [(ngModel)]="expectedPvPower">
+                </mat-slider>
+                <div>
+                  <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showMessage()">
+                    <mat-icon>calculate</mat-icon>
+                    Przelicz
+                  </button>
+                </div>
               </div>
-            </div>
-          </mat-expansion-panel>
-        </mat-accordion>
-
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>

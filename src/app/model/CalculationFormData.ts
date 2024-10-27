@@ -1,15 +1,15 @@
 export class CalculationFormData {
+  id: number = 0;
   region: string = ''
   customerType: string = ''
   roofType: string = ''
   roofSurface: string = ''
-  mountType: string = ''
   installationType: string = ''
   energyConsumptionPerYear: number = 0
   expectedPvPower: number = 0
   projoy: boolean = false;
   fireButton: boolean = false;
-  powerOptimizers: number = 0;
-  energyStorageModel: string = "";
+  powerOptimizersType: string = "";
+  energyStorageModelId: number = 0;
   grant: boolean = false;
 }

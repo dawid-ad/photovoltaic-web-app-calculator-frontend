@@ -1,35 +1,47 @@
-import {inject, Injectable, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {catchError, Observable, of} from "rxjs";
 import {CalculationFormData} from "../model/CalculationFormData";
-import {ContactForm} from "../model/ContactForm";
-import {environment} from "../../environments/enivonment";
+import {environment} from "../../environments/environment";
 import {WarrantyData} from "../model/WarrantyData";
+import {CalculationResult} from "../model/CalculationResult";
+import {EnergyStorage} from "../model/EnergyStorage";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService implements OnInit {
+export class ApiService {
   http = inject(HttpClient);
-  posts: any =[]
 
-  ngOnInit() {
-    // this.fetchPosts();
-  }
-
-  fetchPosts(){
-    this.http.get(environment.API_URL + "/public/contact-form").subscribe((response:any) => {
-      console.log(response);
-    })
+  getWarrantyData(): Observable<WarrantyData> {
+    return this.http.get<WarrantyData>(`${environment.API_URL}/api/warranty`).pipe(
+      catchError(error => {
+        console.error("API Warranty Error:", error);
+        return of(new WarrantyData());
+      })
+    );
   }
 
-  getCalculationResult(object:CalculationFormData):Observable<ContactForm>{
-    return this.http.post<ContactForm>(environment.API_URL + "public/calculate",object);
+  getEnergyStorageModels(): Observable<EnergyStorage[]> {
+    return this.http.get<EnergyStorage[]>(`${environment.API_URL}/api/energy-storage/models`).pipe(
+      catchError(error => {
+        console.error("API Energy Storage Error:", error);
+        return of([]);
+      })
+    );
   }
-  getWarrantyData():Observable<WarrantyData>{
-    const headers = new HttpHeaders({
-      'Authorization': 'your-api-key-here'  // Replace 'your-api-key-here' with your actual API key
-    });
-    return this.http.get<WarrantyData>(environment.API_URL + "api/warranty");
+
+  getCalculationResult(data: CalculationFormData): Observable<CalculationResult> {
+    return this.http.post<CalculationResult>(`${environment.API_URL}/api/calculate`, data).pipe(
+      catchError(error => {
+        console.error("API Calculation Error:", error);
+        return of(new CalculationResult());
+      })
+    );
   }
+
+  // submitContactForm(contactForm: ContactForm): Observable<ContactFormResponse> {
+  //   return this.http.post<ContactFormResponse>(`${environment.API_URL}/api/contact-form`, contactForm);
+  // }
+
 }

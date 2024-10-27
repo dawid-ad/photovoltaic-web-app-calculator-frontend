@@ -1,30 +1,33 @@
-import {Component, ElementRef, HostListener, inject, OnInit, ViewChild} from '@angular/core';
-import {MatIcon} from "@angular/material/icon";
-import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
-import {MatOption, MatRipple} from "@angular/material/core";
-import {MatTooltip} from "@angular/material/tooltip";
-import {NgClass, NgForOf, NgIf, NgOptimizedImage, NgStyle} from "@angular/common";
-import {FormDataService} from "../../services/form-data.service";
-import {FormTabService} from "../../services/form-tab.service";
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule, MatFabButton} from "@angular/material/button";
+import {MatOptionModule, MatRippleModule} from "@angular/material/core";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {CalculationFormDataService} from "../../services/calculation-form-data.service";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatCardModule} from "@angular/material/card";
-import {ThreeDModelComponent} from "../../shared-components/three-d-model/three-d-model.component";
 import {MapComponent} from "../../shared-components/map/map.component";
-import {MatTab, MatTabGroup, MatTabLabel} from "@angular/material/tabs";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {ApiService} from "../../services/api.service";
 import {ContactForm} from "../../model/ContactForm";
-import {Router, RouterLink} from "@angular/router";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {BreakpointObserver} from "@angular/cdk/layout";
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
-import {MatSlider, MatSliderThumb} from "@angular/material/slider";
-import {MatCheckbox} from "@angular/material/checkbox";
-import {environment} from "../../../environments/enivonment";
-import {MatSelect} from "@angular/material/select";
+import {Router, RouterModule} from "@angular/router";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatExpansionModule,} from "@angular/material/expansion";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {environment} from "../../../environments/environment";
+import {MatSelectModule} from "@angular/material/select";
 import {MatRadioModule} from "@angular/material/radio";
-import {MatSlideToggle, MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {WarrantyData} from "../../model/WarrantyData";
+import {EnergyStorage} from "../../model/EnergyStorage";
+import {CalculationResult} from "../../model/CalculationResult";
+import {CalculationFormData} from "../../model/CalculationFormData";
+import {ContactFormResponse} from "../../model/ContactFormResponse";
+import {MatTableModule} from "@angular/material/table";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   animations: [
@@ -36,38 +39,31 @@ import {MatSlideToggle, MatSlideToggleChange} from "@angular/material/slide-togg
     ])
   ],
   imports: [
-    MatIcon,
-    MatIconButton,
-    MatRipple,
-    MatTooltip,
-    NgOptimizedImage,
+    MatIconModule,
+    MatRippleModule,
+    MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-    MatButton,
-    ThreeDModelComponent,
+    MatButtonModule,
     MapComponent,
-    MatTab,
-    MatTabGroup,
-    MatTabLabel,
-    NgIf,
-    NgForOf,
-    NgClass,
-    NgStyle,
+    MatTableModule,
     FormsModule,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    MatSlider,
-    MatSliderThumb,
-    MatCheckbox,
-    RouterLink,
-    MatOption,
-    MatSelect,
+    MatExpansionModule,
+    MatSliderModule,
+    MatCheckboxModule,
+    RouterModule,
+    MatOptionModule,
+    MatSelectModule,
     MatRadioModule,
     MatFabButton,
+    ReactiveFormsModule,
+    NgIf,
+    NgClass,
+    NgForOf,
     MatSlideToggle,
-    ReactiveFormsModule
+    MatProgressSpinner,
+    NgStyle
   ],
   selector: 'app-result',
   standalone: true,
@@ -76,129 +72,182 @@ import {MatSlideToggle, MatSlideToggleChange} from "@angular/material/slide-togg
 })
 export class ResultComponent implements OnInit {
   companyName = environment.companyName;
-  cardData: any = null;
-  pricingFormGroup: any = null;
   private apiService = inject(ApiService);
-  private contactForm = new ContactForm();
-  isMobile = false;
-  specData: any = null;
-  warrantyData: any = null;
+
+  calculationFormData = new CalculationFormData();
+  contactForm = new ContactForm();
+  contactFormResponse = new ContactFormResponse();
+
+  specificationFullCardData: any = null;
+  warrantyFullCardData: any = null;
+  energyStorageModels: any = null;
+
+  powerOptimizersSlider: boolean = false;
+  energyStorageSlider: boolean = false;
+
+  projoyCheckbox: boolean = false;
+
+  calculationDate: any = null;
+  proposedPvPowerText: string = "";
+  estimatedOneYearProduction: number = 0;
+  investmentReturnInYears: number = 0;
+  inverterModel: string = '-';
+  mountType: string = ''
+  priceText: string = "";
+  priceWithoutGrantText: string = "";
+  moduleModel: string = '-';
+  modulePower: number = 0;
+  panelsQuantity: number = 0;
+  vatType: string = "";
+  vatTax: number = 0;
+  pricePerKw: number = 0;
+  energyPricePerKwh: number = 0;
+  projoyIncluded: boolean = false;
+  grantPossible: boolean = false;
+  energyStorageAvailable: boolean = false;
+
+  resultsReady: boolean = true;
+  isLoading: boolean = false;
+
   @ViewChild('specification') specification!: ElementRef;
-  @ViewChild('pricing') pricing!: ElementRef;
 
   constructor(
-    public formDataService: FormDataService,
-    private formTabService: FormTabService,
+    public formDataService: CalculationFormDataService,
     private router: Router,
-    private breakpointObserver: BreakpointObserver,
-    private formBuilder: FormBuilder
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.initSpecData();
-    this.initWarrantyData();
-    this.initPricingFormGroup();
-    this.apiService.getCalculationResult(this.formDataService.getFormData()).subscribe((responseObj: ContactForm) => {
-      this.contactForm = responseObj;
-      console.log(responseObj);
-      this.initResultData();
-    })
-    this.checkWindowSize();
+    this.initDataFromCalculatorForm();
+    this.initApiData();
   }
 
-  @HostListener('window:resize', [])
-  onResize() {
-    this.checkWindowSize();
+  private initApiData() {
+    this.apiService.getWarrantyData().subscribe((warrantyData: WarrantyData) => {
+      this.initWarranty(warrantyData);
+    });
+    this.apiService.getEnergyStorageModels().subscribe((energyStorageModels: EnergyStorage[]) => {
+      this.initEnergyStorageModels(energyStorageModels);
+    });
+    this.calculate();
   }
 
-  checkWindowSize(): void {
-    this.isMobile = window.innerWidth <= 900;
+  private initDataFromCalculatorForm() {
+    this.calculationFormData = this.formDataService.getCalculationFormData();
   }
 
-  initResultData() {
-    // this.cardData = [
-    //   {title: `${this.contactForm.proposedPvPower} kWh`, subtitle: 'Proponowana moc instalacji', footer: ''},
-    //   {
-    //     title: `${this.contactForm.modulePower}W`,
-    //     subtitle: `Moduły ${this.contactForm.moduleModel} ${this.contactForm.panelsQuantity} szt.`,
-    //     footer: ''
-    //   },
-    //   {title: this.contactForm.mountType, subtitle: 'Montaż', footer: ''},
-    //   {title: '---', subtitle: 'Średnie Nasłonecznienie w Twoim Regionie', footer: '(źródło)'},
-    //   {
-    //     title: `${Math.round(this.contactForm.priceFrom).toLocaleString('pl-PL')} zł`,
-    //     subtitle: `Cena ${this.contactForm.vatTax === 1 ? 'netto' : 'brutto'}`,
-    //     footer: ''
-    //   },
-    //   {
-    //     title: '---',
-    //     subtitle: 'Prognozowana produkcja energii w pierwszym roku',
-    //     footer: 'przy średniej cenie 0.90 zł / 1 kWh (źródło)'
-    //   }
-    // ];
+  public calculate(){
+    this.isLoading = true;
+    this.apiService.getCalculationResult(this.calculationFormData).subscribe({
+      next: (calculationResult: CalculationResult) => {
+        if (calculationResult) {
+          this.initResults(calculationResult);
+          this.initSpecification();
+        }
+        this.isLoading = false;
+      },
+      error: () => this.isLoading = false
+    });
   }
 
-  private initSpecData() {
-    this.specData = [{
+  public calculateOnChange(){
+    this.calculationFormData.projoy = this.projoyCheckbox;
+    if(!this.powerOptimizersSlider){
+      this.calculationFormData.powerOptimizersType = ""
+    }
+    if(!this.energyStorageSlider){
+      this.calculationFormData.energyStorageModelId = 0;
+      this.calculationFormData.grant = false;
+    }
+    this.calculate();
+  }
+
+  private initEnergyStorageModels(energyStorageModels: EnergyStorage[]) {
+    this.energyStorageModels = energyStorageModels;
+  }
+
+  private initWarranty(warrantyData: WarrantyData) {
+    this.warrantyFullCardData = [{
       group: [
-        {title: "Szacowana wartość wyprodukowanej energii w 1 roku:", value: "40 000 zl", important: true},
+        {title: "Panele fotowoltaiczne wydajność:", value: warrantyData.panelEfficiency, important: true},
+      ]
+    }, {
+      group: [
+        {title: "Panele fotowoltaiczne produkt:", value: warrantyData.panelProduct, important: false}
+      ]
+    }, {
+      group: [
+        {title: "Falownik:", value: warrantyData.inverter, important: false},
+      ]
+    }, {
+      group: [
+        {title: "Konstrukcja montażowa:", value: warrantyData.construction, important: false}
+      ]
+    }, {
+      group: [
+        {title: "Montaż:", value: warrantyData.mounting, important: false},
+      ]
+    }];
+  }
+
+  private initSpecification() {
+    this.specificationFullCardData = [{
+      group: [
+        {
+          title: "Szacowana wartość wyprodukowanej energii w 1 roku:",
+          value: `${Math.round(this.estimatedOneYearProduction).toLocaleString('pl-PL')} zł`,
+          important: true
+        },
         {title: "(przy średniej cenie 0,90 zł / 1 kWh)", value: null, important: false}
       ]
-    },{
+    }, {
       group: [
-        {title: "Moduły fotowoltaiczne:", value: "Encore 505W", important: false},
-        {title: "Ilość:", value: "95 szt.", important: false}
+        {
+          title: "Moduły fotowoltaiczne:",
+          value: `${this.moduleModel} ${this.modulePower}W`,
+          important: false
+        },
+        {title: "Ilość:", value: `${this.panelsQuantity} szt.`, important: false}
       ]
-    },{
+    }, {
       group: [
-        {title: "Falownik:", value: "Solplanet", important: false}
+        {title: "Falownik:", value: this.inverterModel, important: false}
       ]
-    },{
+    }, {
       group: [
-        {title: "Montaż:", value: "System montażowy dla dachów skośnych", important: false},
-      ]
-    }];
-  }
-
-  private initWarrantyData() {
-    this.warrantyData = [{
-      group: [
-        {title: "Panele fotowoltaiczne wydajność:", value: "30 lat", important: true},
-      ]
-    },{
-      group: [
-        {title: "Panele fotowoltaiczne produkt:", value: "15 lat", important: false}
-      ]
-    },{
-      group: [
-        {title: "Falownik:", value: "10 lat, 15 lat lub 20 lat", important: false},
-      ]
-    },{
-      group: [
-        {title: "Konstrukcja montażowa:", value: "10 lub 15 lat", important: false}
-      ]
-    },{
-      group: [
-        {title: "Montaż:", value: "3-5 lat", important: false},
+        {title: "Montaż:", value: this.mountType, important: false},
       ]
     }];
   }
 
-  getMountType() {
-    let roofType = this.formDataService.getFormData().roofType;
-    if (roofType) {
-      return roofType;
-    } else {
-      return this.formDataService.getFormData().installationType;
-    }
-  }
-
-  getNumberOfPanels() {
-    return this.contactForm.panelsQuantity;
+  private initResults(calculationResult: CalculationResult) {
+    this.calculationDate = calculationResult.calculationDate;
+    this.proposedPvPowerText = calculationResult.proposedPvPower + " kWp";
+    this.estimatedOneYearProduction = calculationResult.estimatedOneYearProduction;
+    this.investmentReturnInYears = calculationResult.investmentReturnInYears;
+    this.inverterModel = calculationResult.inverterModel;
+    this.mountType = calculationResult.mountTypeForView;
+    this.priceText = `${Math.round(calculationResult.price).toLocaleString('pl-PL')} zł`;
+    this.priceWithoutGrantText = `${Math.round(calculationResult.priceWithoutGrant).toLocaleString('pl-PL')} zł`;
+    this.moduleModel = calculationResult.moduleModel;
+    this.modulePower = calculationResult.modulePower;
+    this.panelsQuantity = calculationResult.panelsQuantity;
+    this.vatTax = calculationResult.vatTax;
+    this.vatType = `${this.vatTax === 1 ? 'netto' : 'brutto'}`;
+    this.pricePerKw = calculationResult.pricePerKw
+    this.energyPricePerKwh = calculationResult.energyPricePerKwh;
+    this.projoyIncluded = calculationResult.projoyIncluded;
+    this.grantPossible = calculationResult.grantPossible;
+    this.energyStorageAvailable = calculationResult.energyStorageAvailable;
+    this.setProjoyCheckbox();
   }
 
   goToFormPage() {
     this.router.navigate(['/form']);
+  }
+
+  private setProjoyCheckbox(){
+    this.projoyCheckbox = this.projoyIncluded || this.calculationFormData.projoy;
   }
 
   scrollDown(targetElement: HTMLElement) {
@@ -212,14 +261,7 @@ export class ResultComponent implements OnInit {
     });
   }
 
-  private initPricingFormGroup() {
-    this.pricingFormGroup = this.formBuilder.group({
-      baseProduct: true,
-      acceptTerms: [false, Validators.requiredTrue]
-    });
-  }
-
-  onSlideToggleChange($event: MatSlideToggleChange) {
-    // calculate
+  keepToggleOn(event: any): void {
+    event.source.checked = true;
   }
 }
