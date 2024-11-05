@@ -1,10 +1,10 @@
 {
   "name": "photovoltaic-web-app-calculator-frontend",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -26,7 +26,8 @@
     "three": "^0.169.0",
     "three-orbitcontrols-ts": "^0.1.2",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.14.10",
+    "ngx-mask": "^15.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.0",
@@ -41,5 +42,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.2"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
