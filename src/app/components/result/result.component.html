@@ -1,14 +1,45 @@
-<div class="spinner-overlay" *ngIf="isLoading">
+<div #loading class="spinner-overlay" *ngIf="isLoading && !apiError">
   <mat-spinner></mat-spinner>
 </div>
 <div class="layout-container">
+  <div *ngIf="!resultsReady && !apiError">
+    <section #waiting class="wait-section">
+      <h2>Ładowanie wyników...</h2>
+    </section>
+  </div>
+  <div *ngIf="sessionExpired">
+    <section #session_expired class="wait-section">
+      <mat-icon style="scale: calc(2); color: coral">wb_twilight</mat-icon>
+      <h3>Sesja wygasła.</h3>
+      <br>
+      <button class="primary-button"
+              matRipple
+              (click)="goToFormPage()">
+        <mat-icon>calculate</mat-icon>
+        PRZELICZ PONOWNIE
+      </button>
+    </section>
+  </div>
+  <div *ngIf="apiError && !sessionExpired">
+    <section #server_error class="wait-section">
+      <div>
+        <mat-icon style="scale: calc(2); color: grey">report</mat-icon>
+        <h1>Wystąpił błąd podczas kontaktu z serwerem.</h1>
+      </div>
+      <br>
+      <button class="primary-button"
+              matRipple
+              (click)="goToFormPage()">
+        <mat-icon>calculate</mat-icon>
+        PRZELICZ PONOWNIE
+      </button>
+    </section>
+  </div>
   <div #resultPage *ngIf="resultsReady">
-    <section class="video-section">
-      <video autoplay muted loop id="backgroundVideo">
-        <source src="/background_result_video_small.mp4" type="video/mp4"/>
-      </video>
-      <div class="video-overlay"></div>
-      <div class="header-content tracking-in-expand">
+    <section class="header-section">
+      <div id="backgroundImg" style="background-image: url('/result-background.jpg')"></div>
+      <div class="overlay"></div>
+      <div class="header-content">
         <h1>{{ proposedPvPowerText }}</h1>
         <p>Proponowana moc instalacji</p>
       </div>
@@ -76,11 +107,11 @@
           <div class="pricing-card" id="price-card">
             <div class="img" style="background-image: url('/solar_img.png')"></div>
             <div class="pricing-footer">
-              <div *ngIf="!calculationFormData.grant">
+              <div *ngIf="!calculationFormData.hasGrant">
                 <span class="pricing-footer-price">{{ priceText }}</span>
                 <span class="pricing-footer-subtitle">Proponowana cena {{ vatType }}*</span>
               </div>
-              <div *ngIf="calculationFormData.grant">
+              <div *ngIf="calculationFormData.hasGrant">
                 <div>
                   <span class="pricing-footer-price text-line-through">{{ priceWithoutGrantText }}</span>
                 </div>
@@ -149,7 +180,7 @@
                 <li>
                   <mat-slide-toggle color="primary"
                                     *ngIf="grantPossible && calculationFormData.energyStorageModelId > 0"
-                                    [(ngModel)]="calculationFormData.grant"
+                                    [(ngModel)]="calculationFormData.hasGrant"
                                     (change)="calculateOnChange()">
                     <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:
                       <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">
@@ -172,48 +203,86 @@
           </button>
         </div>
         <div class="pricing-main-footer-subtitle">
-          *Przedstawiona propozycja ma charakter orientacyjny i może ulec zmianie w zależności od specyficznych warunków technicznych i montażowych.
+          *Przedstawiona propozycja ma charakter orientacyjny i może ulec zmianie w zależności od specyficznych warunków
+          technicznych i montażowych.
           W celu potwierdzenia ostatecznej wyceny, prosimy o pozostawienie kontaktu w formularzu poniżej.
         </div>
-        </div>
-      <div #contact class="card-grid-single mat-elevation-z1">
-        <div class="card-header">
+      </div>
+      <div #contact id="contact-card" class="card-grid-single mat-elevation-z1">
+        <div class="card-header" *ngIf="showContactForm">
           <span class="card-header-title">ZOSTAW KONTAKT</span>
           <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>
         </div>
-        <div class="card-content">
-          <div class="contact-fields">
-            <mat-form-field appearance="outline">
-              <mat-label>Imię i Nazwisko</mat-label>
-              <input matInput style="text-align: left">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>e-mail</mat-label>
-              <input matInput style="text-align: left">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>numer telefonu</mat-label>
-              <input matInput style="text-align: left;" [value]="'&plus;48'">
+        <div class="contact-card-content-spinner" *ngIf="isSending">
+          <mat-spinner></mat-spinner>
+        </div>
+        <div class="contact-card-content-sent" *ngIf="!isSending && !showContactForm">
+          <h2 class="sent-email">
+            <mat-icon>check</mat-icon>
+            Zgłoszenie wysłane
+          </h2>
+        </div>
+        <form [formGroup]="contactFormFields" (ngSubmit)="sendContactForm()" *ngIf="showContactForm">
+          <div class="card-content">
+            <div class="contact-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Imię i nazwisko</mat-label>
+                <input matInput formControlName="name">
+                <mat-error *ngIf="contactFormFields.get('name')?.hasError('required')">Imię i nazwisko jest wymagane
+                </mat-error>
+                <mat-error *ngIf="contactFormFields.get('name')?.hasError('minlength')">Imię i nazwisko nie może być
+                  krótsze niż 5 liter
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Numer telefonu</mat-label>
+                <input matInput formControlName="phone" type='text' mask="000 000 000">
+                <mat-error *ngIf="contactFormFields.get('phone')?.hasError('required')">Numer telefonu jest wymagany
+                </mat-error>
+                <mat-error *ngIf="contactFormFields.get('phone')?.hasError('pattern')">Niepoprawny numer telefonu
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>E-mail</mat-label>
+                <input matInput formControlName="email">
+                <mat-error *ngIf="contactFormFields.get('email')?.hasError('required')">Adres e-mail jest wymagany
+                </mat-error>
+                <mat-error *ngIf="contactFormFields.get('email')?.hasError('email')">Niepoprawny format adresu e-mail
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="contact-fields-message">
+            <mat-form-field class="message" appearance="outline">
+              <mat-label>Wiadomość (opcjonalnie)</mat-label>
+              <textarea matInput formControlName="message"></textarea>
+              <mat-error *ngIf="contactFormFields.get('message')?.hasError('maxlength')">Wiadomość nie może być
+                dłuższa niż 200 znaków
+              </mat-error>
             </mat-form-field>
           </div>
-        </div>
-        <div class="contact-footer">
-          <button class="primary-button" matRipple>
-            <mat-icon>mail</mat-icon>
-            WYŚLIJ
-          </button>
-        </div>
-        <div class="contact-footer">
-          <mat-checkbox class="terms-checkbox" color="primary" required>
-            <p>
-              Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
-              oferty fotowoltaiki zgodnie z
-              <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">
-                polityką prywatności
-              </a>.
-            </p>
-          </mat-checkbox>
-        </div>
+          <div class="contact-footer">
+            <button class="primary-button" matRipple type="submit">
+              <mat-icon>mail</mat-icon>
+              WYŚLIJ
+            </button>
+          </div>
+
+          <div class="contact-footer">
+            <mat-checkbox class="terms-checkbox" color="primary" formControlName="terms">
+              <p>
+                Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
+                oferty fotowoltaiki zgodnie z
+                <a style="text-decoration: underline; cursor: pointer; color: -webkit-link" (click)="openPolicy()">
+                  polityką prywatności
+                </a>.
+              </p>
+            </mat-checkbox>
+            <mat-error *ngIf="contactFormFields.get('terms')?.hasError('required') && contactFormFields.get('terms')?.touched">
+              Zgoda na przetwarzanie danych jest wymagana
+            </mat-error>
+          </div>
+        </form>
       </div>
     </section>
   </div>

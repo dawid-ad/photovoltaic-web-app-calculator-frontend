@@ -3,7 +3,6 @@ export class CalculationResult {
   calculationDate: any = null;
   proposedPvPower: number = 0;
   estimatedOneYearProduction: number = 0;
-  investmentReturnInYears: number = 0;
   inverterModel: string = '-';
   mountTypeForView: string = ''
   price: number = 0;

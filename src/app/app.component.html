@@ -1,7 +1,7 @@
-<div class="page-layout">
-  <app-header></app-header>
-  <main>
-      <router-outlet></router-outlet>
+<div class="app-layout">
+  <app-header *ngIf="!isHomePage"></app-header>
+  <main [ngClass]="{ 'main-content': !isHomePage }">
+    <router-outlet></router-outlet>
   </main>
   <div class="nav-container" *ngIf="showNavigation && selectedTabIndex > 0">
     <button class="nav-button" (click)="previousStep()">
@@ -12,7 +12,7 @@
   <div class="progress-bar-container" *ngIf="showProgress">
     <app-progress-bar></app-progress-bar>
   </div>
-  <app-footer></app-footer>
+  <app-footer *ngIf="!isHomePage"></app-footer>
 </div>
 
 

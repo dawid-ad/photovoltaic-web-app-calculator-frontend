@@ -1,0 +1,26 @@
+.main-layout {
+  padding: 0;
+}
+.card-grid-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 1rem;
+}
+
+.section {
+  min-height: 65vh;
+  padding: 1rem 4rem 4rem;
+  background-color: white;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .card-grid-single {
+    margin: 0.5rem;
+  }
+
+  .section {
+    padding: 2rem;
+    font-size: calc(85%);
+  }
+}

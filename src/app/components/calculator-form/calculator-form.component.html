@@ -1,16 +1,6 @@
 <div class="main-layout">
-  <mat-tab-group>
-    <mat-tab label="Location" disabled="false">
-      <ng-template mat-tab-label>
-        <mat-icon>location_on</mat-icon>
-      </ng-template>
-      <div class="content">
-        <h2>Wybierz swoje województwo</h2>
-        <app-map (regionSelected)="onRegionSelected($event)"></app-map>
-      </div>
-    </mat-tab>
-
-    <mat-tab label="Customer" [disabled]="true">
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Customer" [disabled]="false" *ngIf="!fromHomePage">
       <ng-template mat-tab-label>
         <mat-icon>person</mat-icon>
       </ng-template>
@@ -20,8 +10,8 @@
           <button matRipple
                   [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().customerType === 'PRIVATE'}"
                   (click)="formDataService.getCalculationFormData().customerType = 'PRIVATE'; nextStep()">
-            <mat-icon>person</mat-icon>
-            Prywatny
+            <mat-icon>home</mat-icon>
+            Dom
           </button>
           <button matRipple
                   [ngClass]="{'primary-button': true, 'selected': formDataService.getCalculationFormData().customerType === 'ENTREPRENEUR'}"
@@ -32,7 +22,15 @@
         </div>
       </div>
     </mat-tab>
-
+    <mat-tab label="Location" [disabled]="!fromHomePage">
+      <ng-template mat-tab-label>
+        <mat-icon>location_on</mat-icon>
+      </ng-template>
+      <div class="content">
+        <h2>Wybierz swoje województwo</h2>
+        <app-map (regionSelected)="onRegionSelected($event)"></app-map>
+      </div>
+    </mat-tab>
     <mat-tab label="MountType" [disabled]="true">
       <ng-template mat-tab-label>
         <mat-icon>roofing</mat-icon>
@@ -107,11 +105,16 @@
                 <mat-form-field appearance="outline">
                   <mat-label>kWh</mat-label>
                   <input matInput type="number" style="text-align: center;" [step]="1000" [min]="0"
-                         [(ngModel)]="energyConsumptionPerYear"/>
+                         [(ngModel)]="energyConsumptionPerYear" #energyConsumptionModel="ngModel" required>
+                  <mat-error *ngIf="energyConsumptionModel.invalid && (energyConsumptionModel.touched || energyConsumptionModel.dirty)">
+                    Wartość musi być większa od 0.
+                  </mat-error>
                 </mat-form-field>
+
                 <div>
                   <button class="primary-button" matRipple
-                          (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') : showMessage()">
+                          (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') :
+                          showWarningMessage('Wartość musi być większa od 0!')">
                     <mat-icon>calculate</mat-icon>
                     Przelicz
                   </button>
@@ -133,7 +136,7 @@
                   <input matSliderThumb value="3" [(ngModel)]="expectedPvPower">
                 </mat-slider>
                 <div>
-                  <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showMessage()">
+                  <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showWarningMessage('Wartość musi być większa od 0!')">
                     <mat-icon>calculate</mat-icon>
                     Przelicz
                   </button>

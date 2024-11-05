@@ -1,0 +1,32 @@
+@import './../../../styles/variables';
+
+.mat-dialog-container {
+  background-color: $background-color;
+  padding: 1rem;
+}
+
+.mat-typography {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  text-align: left;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: $bold-font-weight;
+}
+mat-icon {
+  $size: 70px;
+  font-size: $size;
+  height: $size;
+  width: $size*2;
+  line-height: $size;
+}
+
+mat-dialog-actions {
+  padding: 0.5rem;
+}
+
+.nav-button {
+  padding: 0;
+  margin: 0;
+}

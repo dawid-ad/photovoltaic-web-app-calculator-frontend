@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {MapComponent} from "../../shared-components/map/map.component";
 import {ProgressBarComponent} from "../../shared-components/progress-bar/progress-bar.component";
-import {MatTab, MatTabGroup, MatTabLabel, MatTabsModule} from "@angular/material/tabs";
+import {MatTab, MatTabChangeEvent, MatTabGroup, MatTabLabel, MatTabsModule} from "@angular/material/tabs";
 import {MatIcon} from "@angular/material/icon";
-import {FormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField, MatPrefix, MatSuffix} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";
@@ -13,11 +13,12 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
 import {ProgressService} from "../../services/progress.service";
 import {MatOptgroup, MatOption, MatRipple} from "@angular/material/core";
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {trigger, state, style, animate, transition} from '@angular/animations';
 import {CalculationFormDataService} from "../../services/calculation-form-data.service";
 import {FormTabService} from "../../services/form-tab.service";
 import {MatSelect} from "@angular/material/select";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {NotificationService} from "../../services/notification.service";
 
 
 @Component({
@@ -25,8 +26,8 @@ import {Router} from "@angular/router";
   standalone: true,
   animations: [
     trigger('expandCollapse', [
-      state('collapsed', style({ height: '40px', opacity: 0 })),
-      state('expanded', style({ height: '*', opacity: 1 })),
+      state('collapsed', style({height: '40px', opacity: 0})),
+      state('expanded', style({height: '*', opacity: 1})),
       transition('collapsed <=> expanded', animate('0.4s ease-in-out')),
     ])
   ],
@@ -53,20 +54,36 @@ import {Router} from "@angular/router";
     MatSelect,
     MatOption,
     MatOptgroup,
+    ReactiveFormsModule,
   ],
   templateUrl: './calculator-form.component.html',
   styleUrl: './calculator-form.component.scss',
 })
 export class CalculatorFormComponent implements AfterViewInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
+  fromHomePage: boolean = false;
 
   constructor(private progressService: ProgressService,
               public formDataService: CalculationFormDataService,
               private tabService: FormTabService,
-              private router: Router) {}
+              private router: Router,
+              private route: ActivatedRoute,
+              private notificationService: NotificationService) {
+  }
 
   ngAfterViewInit() {
-    const totalSteps = this.tabGroup._tabs.length;
+    let totalSteps = this.tabGroup._tabs.length;
+    this.formDataService.resetCalculationFormData();
+    this.route.queryParams.subscribe(params => {
+      const customerType = params['customerType'];
+      if(customerType === 'PRIVATE' || customerType === 'ENTREPRENEUR') {
+        this.formDataService.getCalculationFormData().customerType = customerType;
+        totalSteps--;
+        this.fromHomePage = true;
+      } else {
+        this.fromHomePage = false;
+      }
+    });
     this.progressService.setTotalSteps(totalSteps);
     this.tabService.setSelectedTabIndex(0);
     this.progressService.setCurrentStep(0);
@@ -75,7 +92,6 @@ export class CalculatorFormComponent implements AfterViewInit {
         this.tabGroup.selectedIndex = index;
       }
     });
-    this.formDataService.resetCalculationFormData();
   }
 
   get energyConsumptionPerYear(): number {
@@ -83,7 +99,7 @@ export class CalculatorFormComponent implements AfterViewInit {
   }
 
   set energyConsumptionPerYear(value: number) {
-    this.formDataService.setFormData({ energyConsumptionPerYear: value });
+    this.formDataService.setFormData({energyConsumptionPerYear: value});
     this.updateExpectedPvPower();
   }
 
@@ -92,16 +108,16 @@ export class CalculatorFormComponent implements AfterViewInit {
   }
 
   set expectedPvPower(value: number) {
-    this.formDataService.setFormData({ expectedPvPower: value });
+    this.formDataService.setFormData({expectedPvPower: value});
   }
 
   private updateExpectedPvPower() {
-    const adjustedPower = Math.round((this.formDataService.getCalculationFormData().energyConsumptionPerYear / 1000) / 0.9);
+    const adjustedPower = Math.round((this.formDataService.getCalculationFormData().energyConsumptionPerYear / 1000) * 1.2);
     this.expectedPvPower = Math.max(3, Math.min(50, adjustedPower));
   }
 
   onRegionSelected(regionName: string) {
-    this.formDataService.setFormData({ region: regionName });
+    this.formDataService.setFormData({region: regionName});
     this.nextStep();
   }
 
@@ -132,7 +148,13 @@ export class CalculatorFormComponent implements AfterViewInit {
     this.router.navigate(['/wycena']);
   }
 
-  showMessage() {
-    //
+  showWarningMessage(message: string) {
+    this.notificationService.showWarningSnackbar(message);
+  }
+
+  onTabChange(event: MatTabChangeEvent): void {
+    if (event.tab.textLabel === 'Customer') {
+      this.tabService.setSelectedTabIndex(0);
+    }
   }
 }

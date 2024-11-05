@@ -8,11 +8,10 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatCardModule} from "@angular/material/card";
 import {MapComponent} from "../../shared-components/map/map.component";
-import {animate, style, transition, trigger} from "@angular/animations";
 import {ApiService} from "../../services/api.service";
 import {ContactForm} from "../../model/ContactForm";
 import {Router, RouterModule} from "@angular/router";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatExpansionModule,} from "@angular/material/expansion";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -28,16 +27,13 @@ import {MatTableModule} from "@angular/material/table";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MatDialog, MatDialogTitle} from "@angular/material/dialog";
+import {PolicyComponent} from "../../shared-components/policy/policy.component";
+import {NgxMaskDirective, NgxMaskPipe, provideNgxMask} from "ngx-mask";
+import {NotificationService} from "../../services/notification.service";
+import {ContactFormRequest} from "../../model/ContactFormRequest";
 
 @Component({
-  animations: [
-    trigger('slideIn', [
-      transition(':enter', [
-        style({opacity: 0, transform: 'translateX(50px)'}),
-        animate('1500ms ease-out', style({opacity: 1, transform: 'translateX(0)'}))
-      ])
-    ])
-  ],
   imports: [
     MatIconModule,
     MatRippleModule,
@@ -63,20 +59,27 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     NgForOf,
     MatSlideToggle,
     MatProgressSpinner,
-    NgStyle
+    NgStyle,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    MatDialogTitle
   ],
   selector: 'app-result',
   standalone: true,
   styleUrl: './result.component.scss',
-  templateUrl: './result.component.html'
+  templateUrl: './result.component.html',
+  providers: [provideNgxMask()]
 })
 export class ResultComponent implements OnInit {
   companyName = environment.companyName;
+  readonly dialog = inject(MatDialog);
   private apiService = inject(ApiService);
+  contactFormFields!: FormGroup;
 
   calculationFormData = new CalculationFormData();
   contactForm = new ContactForm();
-  contactFormResponse = new ContactFormResponse();
+  calculationResult = new CalculationResult();
+  contactFormRequest = new ContactFormRequest();
 
   specificationFullCardData: any = null;
   warrantyFullCardData: any = null;
@@ -90,7 +93,6 @@ export class ResultComponent implements OnInit {
   calculationDate: any = null;
   proposedPvPowerText: string = "";
   estimatedOneYearProduction: number = 0;
-  investmentReturnInYears: number = 0;
   inverterModel: string = '-';
   mountType: string = ''
   priceText: string = "";
@@ -106,58 +108,98 @@ export class ResultComponent implements OnInit {
   grantPossible: boolean = false;
   energyStorageAvailable: boolean = false;
 
-  resultsReady: boolean = true;
+  resultsReady: boolean = false;
   isLoading: boolean = false;
+  isSending: boolean = false;
+  showContactForm: boolean = true;
+  apiError: boolean = false;
+  sessionExpired: boolean = false;
 
   @ViewChild('specification') specification!: ElementRef;
 
   constructor(
     public formDataService: CalculationFormDataService,
     private router: Router,
-  ) {
+    private notificationService: NotificationService,
+    private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
+    this.resultsReady = false;
+    this.apiError = false;
     this.initDataFromCalculatorForm();
     this.initApiData();
+    this.calculate();
+    this.initContactForm();
   }
 
   private initApiData() {
-    this.apiService.getWarrantyData().subscribe((warrantyData: WarrantyData) => {
-      this.initWarranty(warrantyData);
+    this.apiService.getWarrantyData().subscribe({
+      next: (warrantyData: WarrantyData) => {
+        this.initWarranty(warrantyData);
+      },
+      error: (error) => {
+        console.error("WarrantyData Server connection error: ", error);
+        this.resultsReady = false;
+        this.apiError = true;
+      }
     });
-    this.apiService.getEnergyStorageModels().subscribe((energyStorageModels: EnergyStorage[]) => {
-      this.initEnergyStorageModels(energyStorageModels);
+    this.apiService.getEnergyStorageModels().subscribe({
+      next: (energyStorageModels: EnergyStorage[]) => {
+        this.initEnergyStorageModels(energyStorageModels);
+      },
+      error: (error) => {
+        console.error("EnergyStorageModels Server connection error: ", error);
+        this.resultsReady = false;
+        this.apiError = true;
+      }
     });
-    this.calculate();
   }
 
   private initDataFromCalculatorForm() {
     this.calculationFormData = this.formDataService.getCalculationFormData();
+    if (!this.calculationFormData.customerType || !this.calculationFormData.region
+      || !this.calculationFormData.installationType) {
+      this.sessionExpired = true;
+    }
   }
 
-  public calculate(){
+  public calculate() {
     this.isLoading = true;
     this.apiService.getCalculationResult(this.calculationFormData).subscribe({
       next: (calculationResult: CalculationResult) => {
-        if (calculationResult) {
-          this.initResults(calculationResult);
-          this.initSpecification();
-        }
+        this.calculationResult = calculationResult;
+        this.updateResults(calculationResult);
+        this.updateSpecification();
+        this.resultsReady = true;
         this.isLoading = false;
       },
-      error: () => this.isLoading = false
+      error: (error) => {
+        console.error("CalculationResult Server connection error: ", error);
+        this.resultsReady = false;
+        this.apiError = true;
+      }
     });
   }
 
-  public calculateOnChange(){
+  private initContactForm() {
+    this.contactFormFields = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(5)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      message: ['', [Validators.maxLength(200)]],
+      terms: [false, Validators.requiredTrue]
+    });
+  }
+
+  public calculateOnChange() {
     this.calculationFormData.projoy = this.projoyCheckbox;
-    if(!this.powerOptimizersSlider){
+    if (!this.powerOptimizersSlider) {
       this.calculationFormData.powerOptimizersType = ""
     }
-    if(!this.energyStorageSlider){
+    if (!this.energyStorageSlider) {
       this.calculationFormData.energyStorageModelId = 0;
-      this.calculationFormData.grant = false;
+      this.calculationFormData.hasGrant = false;
     }
     this.calculate();
   }
@@ -190,7 +232,7 @@ export class ResultComponent implements OnInit {
     }];
   }
 
-  private initSpecification() {
+  private updateSpecification() {
     this.specificationFullCardData = [{
       group: [
         {
@@ -220,11 +262,10 @@ export class ResultComponent implements OnInit {
     }];
   }
 
-  private initResults(calculationResult: CalculationResult) {
+  private updateResults(calculationResult: CalculationResult) {
     this.calculationDate = calculationResult.calculationDate;
     this.proposedPvPowerText = calculationResult.proposedPvPower + " kWp";
     this.estimatedOneYearProduction = calculationResult.estimatedOneYearProduction;
-    this.investmentReturnInYears = calculationResult.investmentReturnInYears;
     this.inverterModel = calculationResult.inverterModel;
     this.mountType = calculationResult.mountTypeForView;
     this.priceText = `${Math.round(calculationResult.price).toLocaleString('pl-PL')} zł`;
@@ -243,10 +284,10 @@ export class ResultComponent implements OnInit {
   }
 
   goToFormPage() {
-    this.router.navigate(['/form']);
+    this.router.navigate(['/kalkulator']);
   }
 
-  private setProjoyCheckbox(){
+  private setProjoyCheckbox() {
     this.projoyCheckbox = this.projoyIncluded || this.calculationFormData.projoy;
   }
 
@@ -263,5 +304,45 @@ export class ResultComponent implements OnInit {
 
   keepToggleOn(event: any): void {
     event.source.checked = true;
+  }
+
+  openPolicy() {
+    this.dialog.open(PolicyComponent);
+  }
+
+  showError(message: string) {
+    this.notificationService.showErrorDialog(message);
+  }
+
+  showWarning(message: string) {
+    this.notificationService.showWarningSnackbar(message);
+  }
+
+  sendContactForm() {
+    if (this.contactFormFields.invalid) {
+      this.contactFormFields.markAllAsTouched();
+      this.showWarning("Wskazane pola są wymagane");
+      return;
+    }
+    this.contactForm.name = this.contactFormFields.value.name;
+    this.contactForm.email = this.contactFormFields.value.email;
+    this.contactForm.phone = this.contactFormFields.value.phone;
+    this.contactForm.message = this.contactFormFields.value.message;
+    this.contactForm.contactDate = new Date().toISOString();
+
+    this.showContactForm = false;
+    this.isSending = true;
+
+    this.contactFormRequest.contactForm = this.contactForm;
+    this.contactFormRequest.calculationFormData = this.calculationFormData;
+    this.contactFormRequest.calculationResult = this.calculationResult;
+    this.apiService.submitContactForm(this.contactFormRequest).subscribe((contactFormResponse: ContactFormResponse) => {
+      this.isSending = false;
+      this.showContactForm = !contactFormResponse.success;
+      if (!contactFormResponse.success) {
+        this.showError("Wystąpił nieczekiwany problem. Spróbuj ponownie za chwilę.");
+        console.error(contactFormResponse.message);
+      }
+    });
   }
 }

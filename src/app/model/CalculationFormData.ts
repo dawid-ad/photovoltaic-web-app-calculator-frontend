@@ -11,5 +11,5 @@ export class CalculationFormData {
   fireButton: boolean = false;
   powerOptimizersType: string = "";
   energyStorageModelId: number = 0;
-  grant: boolean = false;
+  hasGrant: boolean = false;
 }

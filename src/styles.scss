@@ -27,13 +27,13 @@ body {
   text-align: center;
 }
 
-.page-layout {
+.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100%;
 }
 
-main {
+.main-content {
   flex-grow: 1;
   margin-top: 70px;
 }
@@ -177,4 +177,66 @@ mat-slide-toggle *{
 }
 mat-checkbox * {
   font-family: m3-theme.$app-font;
+}
+
+.snackbar {
+  .mdc-snackbar__surface{
+    border-radius: 8px !important;
+    padding: 16px !important;
+    margin: 1rem !important;
+    margin-top: 8vh !important;
+    margin-bottom: 80px !important;
+    font-size: 10rem !important;
+    opacity: 98%;
+    border-left: solid $dark-grey;
+    border-bottom: solid $dark-grey;
+  }
+  .mdc-snackbar__label	{
+    color: white !important;
+    font-family: $app-font !important;
+    font-size: 1.2rem !important;
+  }
+  .mat-mdc-snack-bar-actions{
+    button{
+      color: white !important;
+      margin-left: 8px !important;
+    }
+  }
+}
+.snackbar-success {
+  .mdc-snackbar__surface{
+    background-color: $dark-green !important;
+  }
+}
+.snackbar-warning {
+  .mdc-snackbar__surface{
+    background-color: $background-color !important;
+    border-left: solid #bd7373;
+    border-bottom: solid #bd7373;
+  }
+  .mdc-snackbar__label	{
+    color: #803232 !important;
+  }
+  .mat-mdc-snack-bar-actions{
+    button{
+      color: #803232 !important;
+    }
+  }
+}
+
+.text-animation {
+  animation: tracking-in-contract 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+@keyframes tracking-in-contract {
+  0% {
+    letter-spacing: 1em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    letter-spacing: normal;
+    opacity: 1;
+  }
 }

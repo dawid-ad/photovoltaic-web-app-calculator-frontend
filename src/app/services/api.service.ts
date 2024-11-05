@@ -6,6 +6,8 @@ import {environment} from "../../environments/environment";
 import {WarrantyData} from "../model/WarrantyData";
 import {CalculationResult} from "../model/CalculationResult";
 import {EnergyStorage} from "../model/EnergyStorage";
+import {ContactFormResponse} from "../model/ContactFormResponse";
+import {ContactFormRequest} from "../model/ContactFormRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -23,25 +25,21 @@ export class ApiService {
   }
 
   getEnergyStorageModels(): Observable<EnergyStorage[]> {
-    return this.http.get<EnergyStorage[]>(`${environment.API_URL}/api/energy-storage/models`).pipe(
-      catchError(error => {
-        console.error("API Energy Storage Error:", error);
-        return of([]);
-      })
-    );
+    return this.http.get<EnergyStorage[]>(`${environment.API_URL}/api/energy-storage/models`);
   }
-
   getCalculationResult(data: CalculationFormData): Observable<CalculationResult> {
-    return this.http.post<CalculationResult>(`${environment.API_URL}/api/calculate`, data).pipe(
+    return this.http.post<CalculationResult>(`${environment.API_URL}/api/calculate`, data);
+  }
+
+  submitContactForm(data: ContactFormRequest): Observable<ContactFormResponse> {
+    return this.http.post<ContactFormResponse>(`${environment.API_URL}/api/contact-form/submit`, data).pipe(
       catchError(error => {
-        console.error("API Calculation Error:", error);
-        return of(new CalculationResult());
+        const contactFormResponse = new ContactFormResponse();
+        contactFormResponse.success = false;
+        contactFormResponse.message = error;
+        return of(contactFormResponse);
       })
     );
   }
-
-  // submitContactForm(contactForm: ContactForm): Observable<ContactFormResponse> {
-  //   return this.http.post<ContactFormResponse>(`${environment.API_URL}/api/contact-form`, contactForm);
-  // }
 
 }
