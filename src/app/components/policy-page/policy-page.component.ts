@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {environment} from "../../../environments/environment";
 import {PolicyComponent} from "../../shared-components/policy/policy.component";
 
 @Component({
@@ -12,7 +11,4 @@ import {PolicyComponent} from "../../shared-components/policy/policy.component";
   styleUrl: './policy-page.component.scss'
 })
 export class PolicyPageComponent {
-  companyName = environment.companyName;
-  companyAddress = environment.companyAddress;
-  emailContact = environment.emailContact;
 }

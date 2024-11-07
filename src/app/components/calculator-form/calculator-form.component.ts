@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MapComponent} from "../../shared-components/map/map.component";
 import {ProgressBarComponent} from "../../shared-components/progress-bar/progress-bar.component";
-import {MatTab, MatTabChangeEvent, MatTabGroup, MatTabLabel, MatTabsModule} from "@angular/material/tabs";
+import {MatTabChangeEvent, MatTabGroup, MatTabsModule} from "@angular/material/tabs";
 import {MatIcon} from "@angular/material/icon";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormField, MatPrefix, MatSuffix} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";

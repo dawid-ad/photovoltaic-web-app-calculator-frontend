@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {CalculatorFormComponent} from "./components/calculator-form/calculator-form.component";
 import {HeaderComponent} from "./shared-components/header/header.component";
