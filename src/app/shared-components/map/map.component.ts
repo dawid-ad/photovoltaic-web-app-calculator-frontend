@@ -11,9 +11,14 @@ export class MapComponent implements OnInit {
   @ViewChild('svgContainer', { static: true }) svgContainer: ElementRef | undefined;
   @Output() regionSelected = new EventEmitter<string>();
   @ViewChild('regionNameDisplay', { static: true }) regionNameDisplay: ElementRef | undefined;
+  private widthOnMobile: number = 1;
+  private heightOnMobile: number = 1;
+  private widthOnPc: number = 1;
+  private heightOnPc: number = 1;
 
   ngOnInit() {
     this.loadSVG();
+    window.addEventListener('resize', () => this.adjustSVGSize());
   }
   loadSVG() {
     fetch('poland-map.svg')
@@ -23,6 +28,7 @@ export class MapComponent implements OnInit {
           this.svgContainer.nativeElement.innerHTML = svg;
           this.addInteractivity();
           this.applyStyles();
+          this.adjustSVGSize();
         }
       })
       .catch(error => console.error('Error loading SVG:', error));
@@ -47,8 +53,12 @@ export class MapComponent implements OnInit {
 
   applyStyles() {
     const svgElement = this.svgContainer?.nativeElement.querySelector('svg');
-    svgElement.setAttribute('width',svgElement.getAttribute('width')/1.3);
-    svgElement.setAttribute('height',svgElement.getAttribute('height')/1.3);
+    const mobileScale = 1.5;
+    const pcScale = 1.2;
+    this.widthOnMobile = svgElement.getAttribute('width') / mobileScale;
+    this.heightOnMobile = svgElement.getAttribute('height') / mobileScale;
+    this.widthOnPc = svgElement.getAttribute('width') / pcScale;
+    this.heightOnPc = svgElement.getAttribute('height') / pcScale;
 
     if (svgElement) {
       svgElement.querySelectorAll('path').forEach((path: SVGPathElement) => {
@@ -56,6 +66,19 @@ export class MapComponent implements OnInit {
         path.setAttribute('stroke', '#07530e');
         path.setAttribute('stroke-width', '2.5');
       });
+    }
+  }
+  adjustSVGSize() {
+    const svgElement = this.svgContainer?.nativeElement.querySelector('svg');
+    if (svgElement) {
+      const windowWidth = window.innerWidth;
+      if (windowWidth <= 900) {
+        svgElement.setAttribute('width', this.widthOnMobile);
+        svgElement.setAttribute('height', this.heightOnMobile);
+      } else {
+        svgElement.setAttribute('width', this.widthOnPc);
+        svgElement.setAttribute('height', this.heightOnPc);
+      }
     }
   }
 
