@@ -20,11 +20,12 @@
   padding: 5rem;
 }
 
-.logo {
+.address-logo-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 10px;
   white-space: nowrap;
+  letter-spacing: 4px;
 }
 
 .logo-image {
@@ -86,7 +87,7 @@
     height: 100vh;
   }
 
-  .logo {
+  .address-logo-title {
     margin-top: 4rem;
     font-size: 1rem;
     font-weight: bold;
