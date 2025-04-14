@@ -8,6 +8,7 @@ import {NgClass, NgIf, NgStyle} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {FormTabService} from "./services/form-tab.service";
 import {ToastModule} from "primeng/toast";
+import {CookieBannerComponent} from "./shared-components/cookie-banner/cookie-banner.component";
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,9 @@ import {ToastModule} from "primeng/toast";
     MatIcon,
     NgIf,
     NgClass,
-    ToastModule],
+    ToastModule,
+    CookieBannerComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
