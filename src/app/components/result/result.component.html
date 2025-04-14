@@ -66,7 +66,6 @@
                   </div>
                   <div *ngIf="item.value" class="spec-cell-value">
                     <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
-                    <span *ngIf="item.important" class="important-icon">!</span>
                   </div>
                   <div *ngIf="!item.value" class="spec-cell-description">
                     {{ item.title }}
@@ -86,8 +85,11 @@
                     {{ item.title }}
                   </div>
                   <div *ngIf="item.value" class="spec-cell-value">
-                    <span [ngClass]="{'important-value': item.important}">{{ item.value }}</span>
-                    <span *ngIf="item.important" class="important-icon">!</span>
+                    <span>{{ item.value }}</span>
+                    <span *ngIf="item.description"
+                          matTooltip="{{ item.description }}"
+                          matTooltipPosition="right"
+                          class="description-icon">!</span>
                   </div>
                   <div *ngIf="!item.value" class="spec-cell-description">
                     {{ item.title }}
@@ -127,27 +129,37 @@
             <div class="pricing-card-content">
               <div class="pricing-checkboxes">
                 <li>
-                  <mat-slide-toggle color="primary" [checked]="true" (change)="keepToggleOn($event)">
+                  <mat-slide-toggle color="primary"
+                                    [checked]="true"
+                                    (change)="keepToggleOn($event)"
+                                    matTooltip="Pozycja obowiązkowa"
+                                    matTooltipPosition="left">
                     <p>Komplet podzespołów, audyt, montaż, dokumentacja przeciwpożarowa, zgłoszenie instalacji, polska
                       gwarancja, wsparcie posprzedażowe</p>
                   </mat-slide-toggle>
                 </li>
                 <li>
                   <mat-slide-toggle color="primary" [(ngModel)]="projoyCheckbox"
-                                    (change)="calculateOnChange()">
+                                    (change)="calculateOnChange()"
+                                    matTooltip="Obowiązkowy przy instalacjach powyżej 6,5 kWp"
+                                    matTooltipPosition="left">
                     <p>Rozłącznik przeciwpożarowy DC Projoy</p>
                   </mat-slide-toggle>
                 </li>
                 <li>
                   <mat-slide-toggle color="primary" [(ngModel)]="calculationFormData.fireButton"
-                                    (change)="calculateOnChange()">
+                                    (change)="calculateOnChange()"
+                                    matTooltip="Ręczny wyłącznik awaryjny, który po naciśnięciu odcina zasilanie prądu stałego (DC) z paneli fotowoltaicznych. Opcjonalny"
+                                    matTooltipPosition="left">
                     <p>Przycisk przeciwpożarowy z wyzwalaczem</p>
                   </mat-slide-toggle>
                 </li>
                 <li>
                   <mat-slide-toggle color="primary"
                                     [(ngModel)]="powerOptimizersSlider"
-                                    (change)="calculateOnChange()">
+                                    (change)="calculateOnChange()"
+                                    matTooltip="Polecane m.in. przy zacienieniu lub różnych kierunkach dachu"
+                                    matTooltipPosition="left">
                     <p>Optymalizatory mocy:</p>
                   </mat-slide-toggle>
                 </li>
@@ -163,7 +175,9 @@
                   <mat-slide-toggle color="primary"
                                     *ngIf="energyStorageAvailable"
                                     [(ngModel)]="energyStorageSlider"
-                                    (change)="calculateOnChange()">
+                                    (change)="calculateOnChange()"
+                                    matTooltip="Polecane, gdy chcesz magazynować nadmiar energii – wymaga falownika hybrydowego (w cenie), który obsługuje zarówno panele, jak i baterię"
+                                    matTooltipPosition="left">
                     <p>Magazyn energii + Falownik hybrydowy</p>
                   </mat-slide-toggle>
                 </li>
@@ -181,7 +195,9 @@
                   <mat-slide-toggle color="primary"
                                     *ngIf="grantPossible && calculationFormData.energyStorageModelId > 0"
                                     [(ngModel)]="calculationFormData.hasGrant"
-                                    (change)="calculateOnChange()">
+                                    (change)="calculateOnChange()"
+                                    matTooltip="Pomagamy przy uzyskaniu dofinansowania!"
+                                    matTooltipPosition="left">
                     <p>Chcę skorzystać z dotacji Mój Prąd. Więcej informacji:
                       <a href="https://mojprad.gov.pl/" target="_blank" rel="noopener noreferrer">
                         mojprad.gov.pl
@@ -221,6 +237,7 @@
             <mat-icon>check</mat-icon>
             Zgłoszenie wysłane
           </h2>
+          <p class="sent-email" style="font-size: 1.2rem">Potwierdzenie wysłania zapytania zostało wysłane na Twoją skrzynkę e-mail. </p>
         </div>
         <form [formGroup]="contactFormFields" (ngSubmit)="sendContactForm()" *ngIf="showContactForm">
           <div class="card-content">

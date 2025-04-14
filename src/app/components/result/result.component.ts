@@ -195,8 +195,11 @@ export class ResultComponent implements OnInit {
   public calculateOnChange() {
     this.calculationFormData.projoy = this.projoyCheckbox;
     if (!this.powerOptimizersSlider) {
-      this.calculationFormData.powerOptimizersType = ""
+      this.calculationFormData.powerOptimizersType = "";
+    } else if (!this.calculationFormData.powerOptimizersType) {
+      this.calculationFormData.powerOptimizersType = "HALF_MODULES";
     }
+
     if (!this.energyStorageSlider) {
       this.calculationFormData.energyStorageModelId = 0;
       this.calculationFormData.hasGrant = false;
@@ -211,23 +214,23 @@ export class ResultComponent implements OnInit {
   private initWarranty(warrantyData: WarrantyData) {
     this.warrantyFullCardData = [{
       group: [
-        {title: "Panele fotowoltaiczne wydajność:", value: warrantyData.panelEfficiency, important: true},
+        {title: "Na wydajność paneli fotowoltaicznych:", value: warrantyData.panelEfficiency, description: ''},
       ]
     }, {
       group: [
-        {title: "Panele fotowoltaiczne produkt:", value: warrantyData.panelProduct, important: false}
+        {title: "Na panele fotowoltaiczne:", value: warrantyData.panelProduct, description: ''}
       ]
     }, {
       group: [
-        {title: "Falownik:", value: warrantyData.inverter, important: false},
+        {title: "Na falownik:", value: warrantyData.inverter, description: 'Możliwość przedłużenia do 20 lat!'},
       ]
     }, {
       group: [
-        {title: "Konstrukcja montażowa:", value: warrantyData.construction, important: false}
+        {title: "Na konstrukcję montażową:", value: warrantyData.construction, description: ''}
       ]
     }, {
       group: [
-        {title: "Montaż:", value: warrantyData.mounting, important: false},
+        {title: "Na montaż:", value: warrantyData.mounting, description: ''},
       ]
     }];
   }

@@ -91,7 +91,8 @@
       <ng-template mat-tab-label>
         <mat-icon>power</mat-icon>
       </ng-template>
-      <h2 style="padding-top:70px">Typ Kalkulacji</h2>
+      <h2 style="padding-top:70px; margin: 10px">Typ Kalkulacji</h2>
+      <h3 style="margin:10px">(Wybierz jedną z opcji)</h3>
 
       <div class="content" style="justify-content: start;">
         <div class="calculation-type-container">
@@ -105,23 +106,22 @@
                 <mat-form-field appearance="outline">
                   <mat-label>kWh</mat-label>
                   <input matInput type="number" style="text-align: center;" [step]="1000" [min]="0"
-                         [(ngModel)]="energyConsumptionPerYear" #energyConsumptionModel="ngModel" required>
+                         [(ngModel)]="energyConsumptionPerYear" #energyConsumptionModel="ngModel">
                   <mat-error *ngIf="energyConsumptionModel.invalid && (energyConsumptionModel.touched || energyConsumptionModel.dirty)">
                     Wartość musi być większa od 0.
                   </mat-error>
                 </mat-form-field>
-
                 <div>
                   <button class="primary-button" matRipple
                           (click)="energyConsumptionPerYear > 0 ? goToResult('energyConsumptionPerYear') :
-                          showWarningMessage('Wartość musi być większa od 0!')">
+                          showWarningMessage('Wartość musi być większa od 0')">
                     <mat-icon>calculate</mat-icon>
                     Przelicz
                   </button>
                 </div>
               </div>
             </mat-expansion-panel>
-            <mat-expansion-panel togglePosition="before">
+            <mat-expansion-panel togglePosition="before" expanded>
               <mat-expansion-panel-header>
                 <mat-panel-title>Oczekiwana moc instalacji</mat-panel-title>
                 <mat-icon>solar_power</mat-icon>
@@ -136,7 +136,7 @@
                   <input matSliderThumb value="3" [(ngModel)]="expectedPvPower">
                 </mat-slider>
                 <div>
-                  <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showWarningMessage('Wartość musi być większa od 0!')">
+                  <button class="primary-button" matRipple (click)="expectedPvPower > 0 ? goToResult('expectedPvPower') : showWarningMessage('Wartość musi być większa od 0')">
                     <mat-icon>calculate</mat-icon>
                     Przelicz
                   </button>

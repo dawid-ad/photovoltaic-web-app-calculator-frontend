@@ -156,22 +156,25 @@
 }
 
 .important-value {
-  text-decoration: underline $dark-green;
-  text-underline-offset: 3px;
+  color: white;
+  background-color: $light-green;
+  border-radius: 5px;
+  padding: 6px 10px;
 }
 
-.important-icon {
+.description-icon {
   display: inline-block;
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   border-radius: 50%;
-  background-color: $dark-green;
+  background-color: $light-green;
   color: white;
-  margin-left: 3px;
+  margin-left: 5px;
   font-weight: $bold-font-weight;
   text-align: center;
-  line-height: 1rem;
+  line-height: 1.2rem;
   font-size: 0.8rem;
+  cursor: pointer;
 }
 
 .pricing-card-grid-double {
@@ -252,7 +255,6 @@
     }
   }
 }
-
 
 .card-grid-single {
   display: grid;
