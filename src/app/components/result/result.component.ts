@@ -1,3 +1,5 @@
+declare var gtag: Function;
+
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule, MatFabButton} from "@angular/material/button";
@@ -70,6 +72,7 @@ import {ContactFormRequest} from "../../model/ContactFormRequest";
   templateUrl: './result.component.html',
   providers: [provideNgxMask()]
 })
+
 export class ResultComponent implements OnInit {
   companyName = environment.companyName;
   readonly dialog = inject(MatDialog);
@@ -342,7 +345,11 @@ export class ResultComponent implements OnInit {
     this.apiService.submitContactForm(this.contactFormRequest).subscribe((contactFormResponse: ContactFormResponse) => {
       this.isSending = false;
       this.showContactForm = !contactFormResponse.success;
-      if (!contactFormResponse.success) {
+      if (contactFormResponse.success) {
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {'send_to': 'AW-17293818532/q8tWCK2Kk-saEKT1qrZA'});
+        }
+      } else {
         this.showError("Wystąpił nieczekiwany problem. Spróbuj ponownie za chwilę.");
         console.error(contactFormResponse.message);
       }
