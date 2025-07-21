@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {CalculatorFormComponent} from "./components/calculator-form/calculator-form.component";
 import {HeaderComponent} from "./shared-components/header/header.component";
 import {ProgressBarComponent} from "./shared-components/progress-bar/progress-bar.component";
@@ -35,12 +35,15 @@ export class AppComponent implements OnInit {
   showProgress: boolean = false;
   showNavigation: boolean = false;
   isHomePage: boolean = false;
+  utmTerm: string | null = null;
 
-  constructor(private tabService: FormTabService, private router: Router) {
+  constructor(private tabService: FormTabService,
+              private router: Router,
+              private route: ActivatedRoute) {
     this.router.events.subscribe(event => {
       this.showProgress = this.router.url.includes('/kalkulator') || this.router.url.includes('/wycena');
       this.showNavigation = this.router.url.includes('/kalkulator');
-      this.isHomePage = this.router.url === '/home';
+      this.isHomePage = this.router.url.startsWith('/home');
     });
   }
 
@@ -48,6 +51,8 @@ export class AppComponent implements OnInit {
     this.tabService.getSelectedTabIndex().subscribe(index => {
       this.selectedTabIndex = index;
     });
+    this.handleUtmTermFromGoogle();
+    this.getOrCreateUserId();
   }
 
   previousStep() {
@@ -55,5 +60,28 @@ export class AppComponent implements OnInit {
       this.selectedTabIndex -= 1;
       this.tabService.setSelectedTabIndex(this.selectedTabIndex);
     }
+  }
+
+  handleUtmTermFromGoogle(){
+    this.route.queryParamMap.subscribe(params => {
+      this.utmTerm = params.get('utm_term');
+      if (this.utmTerm) {
+        localStorage.setItem("utm_term",this.utmTerm)
+        this.router.navigate([], {
+          queryParams: { utm_term: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+      }
+    });
+  }
+
+  getOrCreateUserId(): string {
+    let userId = localStorage.getItem('user_id');
+    if (!userId) {
+      userId = crypto.randomUUID();
+      localStorage.setItem('user_id', userId);
+    }
+    return userId;
   }
 }

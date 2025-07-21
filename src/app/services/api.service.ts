@@ -27,7 +27,16 @@ export class ApiService {
   getEnergyStorageModels(): Observable<EnergyStorage[]> {
     return this.http.get<EnergyStorage[]>(`${environment.API_URL}/api/energy-storage/models`);
   }
+
   getCalculationResult(data: CalculationFormData): Observable<CalculationResult> {
+    const utmTerm = localStorage.getItem('utm_term');
+    const userId = localStorage.getItem('user_id');
+    if (utmTerm) {
+      data.utmTerm = utmTerm;
+    }
+    if (userId) {
+      data.userId = userId;
+    }
     return this.http.post<CalculationResult>(`${environment.API_URL}/api/calculate`, data);
   }
 

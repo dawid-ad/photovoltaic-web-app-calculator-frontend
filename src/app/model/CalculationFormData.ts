@@ -12,4 +12,6 @@ export class CalculationFormData {
   powerOptimizersType: string = "";
   energyStorageModelId: number = 0;
   hasGrant: boolean = false;
+  utmTerm: string = ''
+  userId: string = ''
 }
