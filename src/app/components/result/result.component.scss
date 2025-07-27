@@ -314,6 +314,10 @@
 
   .pricing-main-footer {
     margin: 1rem;
+    .mat-icon {
+      margin: 0;
+      padding: 0;
+    }
   }
   .pricing-main-footer-subtitle {
     text-align: justify;
@@ -387,7 +391,7 @@ mat-error {
 @media (max-width: 900px) {
   .card-grid-double {
     grid-template-columns: 1fr;
-    padding: 1.5rem;
+    padding: 1.5rem 0.5rem;
     margin: 0.5rem;
 
     .img {

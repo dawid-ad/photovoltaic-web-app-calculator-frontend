@@ -117,6 +117,7 @@ export class ResultComponent implements OnInit {
   showContactForm: boolean = true;
   apiError: boolean = false;
   sessionExpired: boolean = false;
+  scrollDownClicked: boolean = false;
 
   @ViewChild('specification') specification!: ElementRef;
 
@@ -187,7 +188,7 @@ export class ResultComponent implements OnInit {
 
   private initContactForm() {
     this.contactFormFields = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(5)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
       message: ['', [Validators.maxLength(200)]],
@@ -302,6 +303,7 @@ export class ResultComponent implements OnInit {
     const offset = remOffset * parseFloat(getComputedStyle(document.documentElement).fontSize);
     const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
     const offsetPosition = elementPosition - offset;
+    this.scrollDownClicked = true;
     window.scrollTo({
       top: offsetPosition,
       behavior: 'smooth'

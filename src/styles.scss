@@ -115,6 +115,10 @@ footer {
     border: 2px solid m3-theme.$dark-green;
     box-shadow: inset 2px 2px 4px rgb(11, 124, 21), inset -1px -1px 3px rgb(124, 213, 130);
   }
+
+  &.pulsing {
+    animation: pulse-animation 1.5s infinite;
+  }
 }
 .nav-button {
   font-family: m3-theme.$app-font;
@@ -227,6 +231,7 @@ mat-checkbox * {
 .text-animation {
   animation: tracking-in-contract 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
 }
+
 @keyframes tracking-in-contract {
   0% {
     letter-spacing: 1em;
@@ -238,5 +243,21 @@ mat-checkbox * {
   100% {
     letter-spacing: normal;
     opacity: 1;
+  }
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 213, 130, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 15px 10px rgba(124, 213, 130, 0);
+    background-color: m3-theme.$dark-green;
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 213, 130, 0);
+    transform: scale(1);
   }
 }

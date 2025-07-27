@@ -210,12 +210,13 @@
           </div>
         </div>
         <div class="pricing-main-footer">
-          <button class="primary-button"
+          <button [class.pulsing]="!scrollDownClicked" class="primary-button"
                   matRipple
                   (click)="scrollDown(contact)">
             <mat-icon>keyboard_arrow_down</mat-icon>
             DOWIEDZ SIĘ WIĘCEJ
             <mat-icon>keyboard_arrow_down</mat-icon>
+            <mat-icon>touch_app</mat-icon>
           </button>
         </div>
         <div class="pricing-main-footer-subtitle">
@@ -227,7 +228,7 @@
       <div #contact id="contact-card" class="card-grid-single mat-elevation-z1">
         <div class="card-header" *ngIf="showContactForm">
           <span class="card-header-title">ZOSTAW KONTAKT</span>
-          <span class="card-header-subtitle">oddzwonimy w ciągu 24h</span>
+          <span class="card-header-subtitle">oddzwonimy w ciągu 12h</span>
         </div>
         <div class="contact-card-content-spinner" *ngIf="isSending">
           <mat-spinner></mat-spinner>
@@ -243,12 +244,12 @@
           <div class="card-content">
             <div class="contact-fields">
               <mat-form-field appearance="outline">
-                <mat-label>Imię i nazwisko</mat-label>
+                <mat-label>Imię</mat-label>
                 <input matInput formControlName="name">
-                <mat-error *ngIf="contactFormFields.get('name')?.hasError('required')">Imię i nazwisko jest wymagane
+                <mat-error *ngIf="contactFormFields.get('name')?.hasError('required')">Imię jest wymagane
                 </mat-error>
-                <mat-error *ngIf="contactFormFields.get('name')?.hasError('minlength')">Imię i nazwisko nie może być
-                  krótsze niż 5 liter
+                <mat-error *ngIf="contactFormFields.get('name')?.hasError('minlength')">Imię nie może być
+                  krótsze niż 3
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline">
@@ -286,6 +287,9 @@
           </div>
 
           <div class="contact-footer">
+            <mat-error *ngIf="contactFormFields.get('terms')?.hasError('required') && contactFormFields.get('terms')?.touched">
+              Zgoda na przetwarzanie danych jest wymagana:
+            </mat-error>
             <mat-checkbox class="terms-checkbox" color="primary" formControlName="terms">
               <p>
                 Wyrażam zgodę na przetwarzanie moich danych osobowych przez {{ companyName }}, w celu kontaktu i&nbsp;przedstawienia
@@ -295,9 +299,6 @@
                 </a>.
               </p>
             </mat-checkbox>
-            <mat-error *ngIf="contactFormFields.get('terms')?.hasError('required') && contactFormFields.get('terms')?.touched">
-              Zgoda na przetwarzanie danych jest wymagana
-            </mat-error>
           </div>
         </form>
       </div>
